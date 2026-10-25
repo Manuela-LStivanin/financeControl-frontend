@@ -6,7 +6,7 @@ import Link from "next/link";
 import Button from "../components/Button";
 import Icon from "../components/Icon";
 import TextField from "../components/TextField";
-import { API_URL } from "@/lib/api";
+  import { API_URL, apiErrorMessage } from "@/lib/api";
 import { saveToken } from "@/lib/auth";
 
 export default function LoginPage() {
@@ -35,7 +35,7 @@ export default function LoginPage() {
         if (resposta.status === 401) {
           setErro("E-mail ou senha incorretos.");
         } else {
-          setErro(Array.isArray(dados.message) ? dados.message[0] : dados.message);
+          setErro(apiErrorMessage(dados));
         }
         return;
       }

@@ -159,3 +159,13 @@ body {
 .fc-auth-title { font-size: 22px; line-height: 28px; font-weight: 800; letter-spacing: -0.01em; }
 .fc-auth-desc { margin-top: 2px; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
 .fc-auth-foot { font-size: 13px; color: var(--ink-muted); text-align: center; }
+
+/* ---------- Controle segmentado (escolha entre opções) ---------- */
+.fc-seg { display: inline-flex; gap: 4px; padding: 4px; background: var(--surface-300); border-radius: var(--radius-pill); }
+.fc-seg-item { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 14px; font-weight: 700; height: 36px; padding: 0 var(--space-4); border: 0; border-radius: var(--radius-pill); background: transparent; color: var(--ink-muted); cursor: pointer; }
+.fc-seg-item:hover { color: var(--ink); }
+.fc-seg-item.is-on { background: var(--surface-200); color: var(--brand-ink); box-shadow: 0 1px 3px rgba(14, 18, 34, .12); }
+.fc-seg-item:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ---------- Dois campos lado a lado ---------- */
+.fc-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
