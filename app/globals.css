@@ -189,3 +189,46 @@ body {
 
 /* ---------- Dois campos lado a lado ---------- */
 .fc-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+
+/* ===== Área privada: menu lateral + conteúdo ===== */
+.fc-shell { display: flex; min-height: 100vh; }
+
+.fc-sidebar {
+  width: 260px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-6) var(--space-4);
+  background: var(--surface-200);
+  border-right: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.fc-nav { list-style: none; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.fc-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: 44px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--ink-muted);
+  font-weight: 600;
+  text-decoration: none;
+}
+.fc-nav-item:hover { background: var(--surface-300); color: var(--ink); }
+.fc-nav-item.is-active { background: var(--brand-soft); color: var(--brand-ink); font-weight: 800; }
+
+.fc-content { flex: 1; min-width: 0; padding: var(--space-8) var(--space-12) var(--space-12); }
+
+/* Celular: menu vira uma barra no topo */
+@media (max-width: 900px) {
+  .fc-shell { flex-direction: column; }
+  .fc-sidebar { width: 100%; height: auto; position: static; flex-direction: row; align-items: center; overflow-x: auto; }
+  .fc-nav { flex-direction: row; }
+  .fc-nav-item span { display: none; }
+  .fc-content { padding: var(--space-6) var(--space-4); }
+}
