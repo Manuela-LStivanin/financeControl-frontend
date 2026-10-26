@@ -1,20 +1,17 @@
-import Link from "next/link";
-import Button from "./components/Button";
+"use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { isAuthenticated } from "@/lib/auth";
+
+// Página inicial: não mostra nada, só encaminha
+// para o painel (se já estiver logado) ou para o login
 export default function Home() {
-  return (
-    <main style={{ padding: "var(--space-8)", display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-      <h1>Olá, financeControl</h1>
-      <Link href="/login">Entrar</Link>
+  const router = useRouter();
 
-      <div style={{ display: "flex", gap: "var(--space-3)" }}>
-        <Button icon="plus">Nova conta</Button>
-        <Button variant="secondary">Cancelar</Button>
-        <Button variant="ghost" icon="chevron">Ver todas</Button>
-        <Button variant="danger" icon="trash">Apagar conta</Button>
-        <Button size="sm" icon="check">Salvar</Button>
-        <Button disabled>Desabilitado</Button>
-      </div>
-    </main>
-  );
+  useEffect(() => {
+    router.replace(isAuthenticated() ? "/painel" : "/login");
+  }, [router]);
+
+  return null;
 }
