@@ -10,7 +10,7 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace(isAuthenticated() ? "/painel" : "/login");
+    router.replace(isAuthenticated() ? "/visao-geral" : "/login");
   }, [router]);
 
   return null;

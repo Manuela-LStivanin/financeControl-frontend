@@ -51,7 +51,7 @@ export default function LoginPage() {
       }
 
       saveToken(dados.access_token);
-      router.replace("/painel");
+      router.replace("/visao-geral");
     } catch {
       setErroApi("Não foi possível conectar à API. Confira se o backend está rodando.");
     } finally {
