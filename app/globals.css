@@ -347,3 +347,27 @@ body {
 }
 
 .fc-iconbtn-danger:hover { background: var(--saida-soft); color: var(--saida); }
+
+/* ===== Aviso (toast) ===== */
+.fc-toast {
+  position: fixed;
+  right: var(--space-6);
+  bottom: var(--space-6);
+  z-index: 80;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--ink);
+  color: var(--surface-200);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--shadow-modal);
+}
+.fc-toast-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--brand); color: var(--on-brand);
+}
+.fc-toast-danger .fc-toast-icon { background: var(--saida); }
