@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Button from "../../components/Button";
+import ConfirmDialog from "../../components/ConfirmDialog";
 import EmptyState from "../../components/EmptyState";
 import Icon from "../../components/Icon";
 import Modal from "../../components/Modal";
 import SectionHeader from "../../components/SectionHeader";
-import TextField from "../../components/TextField"; // NOVO
+import TextField from "../../components/TextField";
 import { apiFetch } from "@/lib/api";
 
 // Formato de uma categoria, igual ao que a API devolve
@@ -15,13 +16,17 @@ type Categoria = { id: number; name: string; userId: number | null };
 export default function CategoriasPage() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [erro, setErro] = useState("");
-  const [modalAberto, setModalAberto] = useState(false);
 
-  // NOVO: estado do formulário do modal
+  // Modal de criar/renomear
+  const [modalAberto, setModalAberto] = useState(false);
   const [editando, setEditando] = useState<Categoria | null>(null); // null = criando
   const [nome, setNome] = useState("");
   const [erroModal, setErroModal] = useState("");
   const [salvando, setSalvando] = useState(false);
+
+  // Confirmação de exclusão
+  const [apagando, setApagando] = useState<Categoria | null>(null); // null = fechada
+  const [excluindo, setExcluindo] = useState(false);
 
   // Busca as categorias na API
   async function carregar() {
@@ -37,7 +42,7 @@ export default function CategoriasPage() {
     carregar();
   }, []);
 
-  // NOVO: abre o modal vazio, para criar
+  // Abre o modal vazio, para criar
   function abrirNova() {
     setEditando(null);
     setNome("");
@@ -45,7 +50,7 @@ export default function CategoriasPage() {
     setModalAberto(true);
   }
 
-  // NOVO: abre o modal com o nome atual, para renomear
+  // Abre o modal com o nome atual, para renomear
   function abrirRenomear(categoria: Categoria) {
     setEditando(categoria);
     setNome(categoria.name);
@@ -53,7 +58,7 @@ export default function CategoriasPage() {
     setModalAberto(true);
   }
 
-  // NOVO: valida e envia para a API (POST para criar, PUT para renomear)
+  // Valida e envia para a API (POST para criar, PUT para renomear)
   async function salvar(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -83,6 +88,22 @@ export default function CategoriasPage() {
       setErroModal((e as Error).message);
     } finally {
       setSalvando(false);
+    }
+  }
+
+  // Apaga na API depois da confirmação
+  async function confirmarExclusao() {
+    if (!apagando) return;
+    setExcluindo(true);
+    try {
+      await apiFetch(`/categories/${apagando.id}`, { method: "DELETE" });
+      setApagando(null);
+      await carregar();
+    } catch (e) {
+      setErro((e as Error).message);
+      setApagando(null);
+    } finally {
+      setExcluindo(false);
     }
   }
 
@@ -117,7 +138,6 @@ export default function CategoriasPage() {
                 <div key={c.id} className="fc-catrow">
                   <span className="fc-caticon"><Icon name="tag" size={18} /></span>
                   <span className="fc-catname">{c.name}</span>
-                  {/* NOVO: botão de renomear */}
                   <button
                     type="button"
                     className="fc-iconbtn"
@@ -127,6 +147,16 @@ export default function CategoriasPage() {
                   >
                     <Icon name="edit" size={18} />
                   </button>
+                  {/* NOVO (c): botão de apagar, logo depois do lápis */}
+                  <button
+                    type="button"
+                    className="fc-iconbtn fc-iconbtn-danger"
+                    onClick={() => setApagando(c)}
+                    aria-label={`Apagar ${c.name}`}
+                    title="Apagar"
+                  >
+                    <Icon name="trash" size={18} />
+                  </button>
                 </div>
               ))}
             </div>
@@ -134,7 +164,7 @@ export default function CategoriasPage() {
             <EmptyState
               icon="tag"
               title="Você ainda não criou categorias"
-              action={<Button icon="plus" onClick={abrirNova}>Criar categoria</Button>} // NOVO
+              action={<Button icon="plus" onClick={abrirNova}>Criar categoria</Button>}
             >
               Crie categorias próprias, como Faculdade ou Pets, além das padrão.
             </EmptyState>
@@ -155,7 +185,7 @@ export default function CategoriasPage() {
         </section>
       </div>
 
-      {/* NOVO: o modal agora tem formulário, e o título muda conforme criando ou renomeando */}
+      {/* Modal de criar/renomear */}
       <Modal
         open={modalAberto}
         title={editando ? "Renomear categoria" : "Nova categoria"}
@@ -183,6 +213,21 @@ export default function CategoriasPage() {
           />
         </form>
       </Modal>
+
+      {/* NOVO (d): confirmação de exclusão, logo depois do Modal */}
+      <ConfirmDialog
+        open={apagando !== null}
+        title={`Apagar a categoria ${apagando?.name ?? ""}?`}
+        confirmLabel="Apagar categoria"
+        onConfirm={confirmarExclusao}
+        onCancel={() => setApagando(null)}
+        loading={excluindo}
+      >
+        <p>
+          As movimentações dessa categoria <strong>não serão apagadas</strong>: elas ficam como{" "}
+          <strong>Sem categoria</strong>.
+        </p>
+      </ConfirmDialog>
     </div>
   );
 }

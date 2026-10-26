@@ -345,3 +345,5 @@ body {
   border-top: 1px solid var(--line);
   background: var(--surface-100);
 }
+
+.fc-iconbtn-danger:hover { background: var(--saida-soft); color: var(--saida); }
