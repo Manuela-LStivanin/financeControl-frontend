@@ -1,8 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Icon, { IconName } from "./Icon";
+import { apiFetch } from "@/lib/api";
+import { clearToken } from "@/lib/auth";
 
 // As telas da área privada, na ordem do protótipo
 const itens: { href: string; label: string; icon: IconName }[] = [
@@ -16,6 +19,25 @@ const itens: { href: string; label: string; icon: IconName }[] = [
 
 export default function Sidebar() {
   const pathname = usePathname(); // endereço atual, ex.: "/contas"
+
+  const router = useRouter();
+  const [usuario, setUsuario] = useState<{
+    name: string;
+    email: string;
+  } | null>(null);
+
+  // Busca os dados de quem está logado, uma vez, quando o menu aparece
+  useEffect(() => {
+    apiFetch("/users/me")
+      .then(setUsuario)
+      .catch(() => {});
+  }, []);
+
+  // Sair: apaga o token e volta para o login
+  function sair() {
+    clearToken();
+    router.replace("/login");
+  }
 
   return (
     <nav className="fc-sidebar" aria-label="Navegação principal">
@@ -43,6 +65,27 @@ export default function Sidebar() {
           );
         })}
       </ul>
+
+      {usuario && (
+        <div className="fc-sidebar-user">
+          <span className="fc-avatar">
+            {usuario.name.charAt(0).toUpperCase()}
+          </span>
+          <div className="fc-sidebar-user-text">
+            <strong>{usuario.name}</strong>
+            <span>{usuario.email}</span>
+          </div>
+          <button
+            type="button"
+            className="fc-iconbtn"
+            onClick={sair}
+            aria-label="Sair"
+            title="Sair"
+          >
+            <Icon name="logout" size={18} />
+          </button>
+        </div>
+      )}
     </nav>
   );
 }

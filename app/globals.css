@@ -232,3 +232,43 @@ body {
   .fc-nav-item span { display: none; }
   .fc-content { padding: var(--space-6) var(--space-4); }
 }
+
+.fc-sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+.fc-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  font-weight: 800;
+}
+.fc-sidebar-user-text { flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 14px; line-height: 18px; }
+.fc-sidebar-user-text span { font-size: 12px; color: var(--ink-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fc-iconbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+.fc-iconbtn:hover { background: var(--surface-300); color: var(--ink); }
+
+@media (max-width: 900px) {
+  .fc-sidebar-user-text { display: none; }
+}
