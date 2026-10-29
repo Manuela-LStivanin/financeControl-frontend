@@ -347,3 +347,32 @@ body {
 }
 
 .fc-iconbtn-danger:hover { background: var(--saida-soft); color: var(--saida); }
+
+/* ===== Textos e valores ===== */
+.fc-label { font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }
+.fc-meta { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
+.fc-amount { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; color: var(--ink); }
+.fc-amount-lg { display: block; font-size: 26px; line-height: 32px; font-weight: 800; letter-spacing: -0.01em; }
+
+/* ===== Faixa de resumo (topo da tela de contas) ===== */
+.fc-strip { display: flex; flex-wrap: wrap; gap: var(--space-12); padding: var(--space-5) var(--space-6); background: var(--surface-200); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
+.fc-strip > div { display: flex; flex-direction: column; gap: var(--space-1); }
+.fc-strip-n { font-size: 26px; line-height: 32px; font-weight: 800; }
+
+/* ===== Grade de cards ===== */
+.fc-grid { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.fc-addcard { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2); min-height: 200px; border: 1.5px dashed var(--line-strong); border-radius: var(--radius-lg); background: transparent; color: var(--brand-ink); font: inherit; font-weight: 700; cursor: pointer; }
+.fc-addcard:hover { background: var(--brand-soft); border-color: var(--brand-ink); }
+.fc-addcard:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ===== Card de conta ===== */
+.fc-account { display: flex; flex-direction: column; gap: var(--space-5); padding: var(--space-6); }
+.fc-account-head { display: flex; align-items: center; gap: var(--space-3); }
+.fc-account-mono { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; border-radius: 12px; background: var(--brand-soft); color: var(--brand-ink); font-size: 18px; font-weight: 800; }
+.fc-account-id { flex: 1; min-width: 0; }
+.fc-account-inst { font-size: 16px; line-height: 22px; font-weight: 700; }
+.fc-account-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding-top: var(--space-4); border-top: 1px solid var(--line); }
+
+/* ===== Formulário dentro de modal e nota informativa ===== */
+.fc-modal-form { display: flex; flex-direction: column; gap: var(--space-4); }
+.fc-note { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); background: var(--surface-300); font-size: 14px; }
