@@ -446,3 +446,46 @@ body {
 /* ===== Formulários dentro de painéis ===== */
 .fc-form { display: flex; flex-direction: column; gap: var(--space-4); }
 .fc-hint { font-size: 13px; line-height: 18px; color: var(--ink-muted); margin-top: -8px; }
+
+/* ===== Texto só para leitores de tela (invisível na tela) ===== */
+.fc-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ===== Valores com sinal ===== */
+.fc-amount-entrada { color: var(--entrada); }
+.fc-amount-saida { color: var(--saida); }
+
+/* ===== Lista de escolha (select) ===== */
+.fc-selectwrap { position: relative; display: flex; align-items: center; }
+.fc-select { appearance: none; padding-right: 40px; cursor: pointer; }
+.fc-select:disabled { background: var(--surface-300); color: var(--ink-muted); cursor: not-allowed; }
+.fc-select-caret { position: absolute; right: 14px; transform: rotate(90deg); color: var(--ink-muted); pointer-events: none; }
+
+/* ===== Interruptor (switch) ===== */
+.fc-switchrow { display: flex; align-items: center; gap: var(--space-3); }
+.fc-switch { position: relative; width: 44px; height: 26px; flex: none; padding: 0; border-radius: var(--radius-pill); border: 1.5px solid var(--line-strong); background: var(--surface-300); cursor: pointer; }
+.fc-switch-knob { position: absolute; top: 3px; left: 3px; width: 17px; height: 17px; border-radius: 50%; background: var(--ink-muted); transition: transform .15s; }
+.fc-switch.is-on { background: var(--brand); border-color: var(--brand); }
+.fc-switch.is-on .fc-switch-knob { transform: translateX(18px); background: var(--on-brand); }
+.fc-switch:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.fc-switch-label { display: flex; flex-direction: column; font-weight: 600; cursor: pointer; }
+.fc-switch-hint { font-size: 13px; line-height: 18px; font-weight: 500; color: var(--ink-muted); }
+
+/* ===== Controle segmentado dentro de um campo: fica do tamanho das opções ===== */
+.fc-field > .fc-seg { align-self: flex-start; }
+
+/* ===== Barra de filtros ===== */
+.fc-filters { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); padding: var(--space-4); }
+.fc-filters .fc-field { min-width: 190px; }
+.fc-filters .fc-field:first-child { flex: 1; min-width: 260px; }
+
+/* ===== Tabela ===== */
+.fc-tablewrap { overflow-x: auto; }
+.fc-table { width: 100%; border-collapse: collapse; }
+.fc-table th { text-align: left; font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-muted); background: var(--surface-300); padding: var(--space-3) var(--space-4); white-space: nowrap; }
+.fc-table td { padding: 14px var(--space-4); border-top: 1px solid var(--line); vertical-align: middle; }
+.fc-table tbody tr:hover { background: var(--surface-100); }
+.fc-num { text-align: right !important; }
+.fc-meta-cell { font-size: 13px; color: var(--ink-muted); white-space: nowrap; }
+.fc-cell-main { display: flex; align-items: center; gap: var(--space-2); font-weight: 700; }
+.fc-actcol { width: 84px; }
+.fc-rowactions { display: flex; justify-content: flex-end; gap: 2px; }
