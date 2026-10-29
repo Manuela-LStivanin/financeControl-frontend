@@ -1,5 +1,6 @@
+import Button from "./Button";
 import Icon from "./Icon";
-import { formatDate } from "@/lib/format";
+import { formatBRL, formatDate } from "@/lib/format"; // NOVO: formatBRL
 
 // Formato de uma meta, igual ao que a API devolve
 export type Meta = {
@@ -11,20 +12,24 @@ export type Meta = {
   achieved: boolean;     // calculado pela API
 };
 
-// NOVO: o card recebe a meta e, opcionalmente, o que fazer ao editar e apagar
+// O card recebe a meta e, opcionalmente, o que fazer ao guardar, editar e apagar
 type GoalCardProps = {
   meta: Meta;
+  onDeposit?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
 };
 
-// Card de uma meta: descrição, prazo, barra de progresso e situação
-export default function GoalCard({ meta, onEdit, onDelete }: GoalCardProps) { // NOVO: onEdit e onDelete
+// Card de uma meta: descrição, prazo, valores, barra de progresso e situação
+export default function GoalCard({ meta, onDeposit, onEdit, onDelete }: GoalCardProps) {
   const atual = Number(meta.currentAmount);
   const alvo = Number(meta.targetAmount);
 
   // Porcentagem guardada, limitada a 100 (pode ter guardado mais que o alvo)
   const pct = alvo > 0 ? Math.min(100, Math.round((atual / alvo) * 100)) : 0;
+
+  // NOVO: quanto falta para chegar no alvo (nunca negativo)
+  const falta = Math.max(0, alvo - atual);
 
   // Atrasada: não foi atingida e o prazo já passou
   const atrasada = !meta.achieved && new Date(meta.deadline) < new Date();
@@ -45,6 +50,12 @@ export default function GoalCard({ meta, onEdit, onDelete }: GoalCardProps) { //
         {atrasada && <span className="fc-badge fc-badge-saida"><Icon name="alert" size={13} />Atrasada</span>}
       </header>
 
+      {/* NOVO: quanto já guardou, "de" quanto quer juntar */}
+      <div className="fc-goal-values">
+        <span className="fc-goal-amount">{formatBRL(atual)}</span>
+        <span className="fc-meta">de {formatBRL(alvo)}</span>
+      </div>
+
       <div
         className="fc-goal-track"
         role="progressbar"
@@ -56,10 +67,18 @@ export default function GoalCard({ meta, onEdit, onDelete }: GoalCardProps) { //
         <div className="fc-goal-fill" style={{ width: `${pct}%` }} />
       </div>
 
-      {/* NOVO: porcentagem à esquerda e botões à direita */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span className="fc-goal-pct">{pct}%</span>
-        <span style={{ display: "flex", gap: 2 }}>
+        {/* NOVO: porcentagem com o que falta embaixo */}
+        <span className="fc-goal-status">
+          <span className="fc-goal-pct">{pct}%</span>
+          <span className="fc-meta">{meta.achieved ? "meta atingida" : `faltam ${formatBRL(falta)}`}</span>
+        </span>
+        <span style={{ display: "flex", alignItems: "center", gap: 2 }}>
+          {onDeposit && !meta.achieved && (
+            <Button size="sm" variant="secondary" icon="plus" onClick={onDeposit}>
+              Guardar
+            </Button>
+          )}
           {onEdit && (
             <button type="button" className="fc-iconbtn" onClick={onEdit} aria-label={`Editar ${meta.description || "meta"}`} title="Editar">
               <Icon name="edit" size={18} />

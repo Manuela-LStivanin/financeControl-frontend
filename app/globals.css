@@ -402,3 +402,8 @@ body {
 .fc-goal-track { height: 10px; border-radius: var(--radius-pill); background: var(--surface-300); overflow: hidden; }
 .fc-goal-fill { height: 100%; border-radius: var(--radius-pill); background: var(--brand-ink); transition: width 0.3s; }
 .fc-goal-pct { font-size: 15px; font-weight: 800; color: var(--brand-ink); }
+
+/* ===== Valores da meta ===== */
+.fc-goal-values { display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; }
+.fc-goal-amount { font-size: 26px; line-height: 32px; font-weight: 800; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.fc-goal-status { display: flex; flex-direction: column; }

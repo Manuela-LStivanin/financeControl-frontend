@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Button from "../../components/Button";
-import ConfirmDialog from "../../components/ConfirmDialog"; // NOVO
+import ConfirmDialog from "../../components/ConfirmDialog";
 import EmptyState from "../../components/EmptyState";
 import GoalCard, { Meta } from "../../components/GoalCard";
 import Modal from "../../components/Modal";
@@ -27,11 +27,16 @@ export default function MetasPage() {
   const [erroApi, setErroApi] = useState("");
   const [salvando, setSalvando] = useState(false);
 
-  // NOVO: confirmação de exclusão
+  // Confirmação de exclusão
   const [apagando, setApagando] = useState<Meta | null>(null); // null = fechada
   const [excluindo, setExcluindo] = useState(false);
 
-  // NOVO: aviso agora tem tom (sucesso ou apagar), igual em categorias
+  // NOVO: modal de guardar (null = fechado)
+  const [guardandoEm, setGuardandoEm] = useState<Meta | null>(null);
+  const [valorGuardar, setValorGuardar] = useState("");
+  const [erroGuardar, setErroGuardar] = useState("");
+
+  // Aviso de sucesso
   const [aviso, setAviso] = useState<{ texto: string; tom: "success" | "danger" } | null>(null);
 
   // Busca as metas na API
@@ -114,7 +119,7 @@ export default function MetasPage() {
         await apiFetch("/goals", { method: "POST", body: JSON.stringify(corpo) });
       }
       setModalAberto(false);
-      setAviso({ texto: editando ? "Meta atualizada" : "Meta criada", tom: "success" }); // NOVO: com tom
+      setAviso({ texto: editando ? "Meta atualizada" : "Meta criada", tom: "success" });
       await carregar();
     } catch (e) {
       setErroApi((e as Error).message);
@@ -123,7 +128,7 @@ export default function MetasPage() {
     }
   }
 
-  // NOVO: apaga na API depois da confirmação
+  // Apaga na API depois da confirmação
   async function confirmarExclusao() {
     if (!apagando) return;
     setExcluindo(true);
@@ -137,6 +142,42 @@ export default function MetasPage() {
       setApagando(null);
     } finally {
       setExcluindo(false);
+    }
+  }
+
+  // NOVO: abre o modal de guardar para uma meta
+  function abrirGuardar(meta: Meta) {
+    setGuardandoEm(meta);
+    setValorGuardar("");
+    setErroGuardar("");
+  }
+
+  // NOVO: soma o valor ao que já foi guardado e envia o total para a API
+  async function confirmarGuardar(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!guardandoEm) return;
+
+    const valor = Number(valorGuardar);
+    if (!(valor > 0)) {
+      setErroGuardar("Informe um valor maior que zero");
+      return;
+    }
+
+    const novoTotal = Number(guardandoEm.currentAmount) + valor;
+
+    setSalvando(true);
+    try {
+      await apiFetch(`/goals/${guardandoEm.id}`, {
+        method: "PUT",
+        body: JSON.stringify({ currentAmount: novoTotal }),
+      });
+      setGuardandoEm(null);
+      setAviso({ texto: "Valor guardado na meta", tom: "success" });
+      await carregar();
+    } catch (e) {
+      setErroGuardar((e as Error).message);
+    } finally {
+      setSalvando(false);
     }
   }
 
@@ -160,8 +201,9 @@ export default function MetasPage() {
             <GoalCard
               key={m.id}
               meta={m}
+              onDeposit={() => abrirGuardar(m)} // NOVO
               onEdit={() => abrirEditar(m)}
-              onDelete={() => setApagando(m)} // NOVO
+              onDelete={() => setApagando(m)}
             />
           ))}
         </div>
@@ -233,7 +275,38 @@ export default function MetasPage() {
         </form>
       </Modal>
 
-      {/* NOVO: confirmação de exclusão */}
+      {/* NOVO: modal de guardar */}
+      <Modal
+        open={guardandoEm !== null}
+        title={`Guardar em “${guardandoEm?.description ?? "meta"}”`}
+        description="Informe quanto você guardou agora. O valor é somado ao que já estava na meta."
+        onClose={() => setGuardandoEm(null)}
+        width={420}
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setGuardandoEm(null)}>Cancelar</Button>
+            <Button type="submit" form="form-guardar" icon="plus" disabled={salvando}>
+              {salvando ? "Guardando..." : "Guardar"}
+            </Button>
+          </>
+        }
+      >
+        <form id="form-guardar" onSubmit={confirmarGuardar} noValidate>
+          <TextField
+            label="Valor (R$)"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="300"
+            value={valorGuardar}
+            onChange={(e) => setValorGuardar(e.target.value)}
+            error={erroGuardar}
+            autoFocus
+          />
+        </form>
+      </Modal>
+
+      {/* Confirmação de exclusão */}
       <ConfirmDialog
         open={apagando !== null}
         title={`Apagar a meta ${apagando?.description ?? ""}?`}
@@ -245,7 +318,7 @@ export default function MetasPage() {
         <p>O progresso guardado nessa meta será perdido. Essa ação não pode ser desfeita.</p>
       </ConfirmDialog>
 
-      {/* Aviso de sucesso (NOVO: agora com tom) */}
+      {/* Aviso de sucesso */}
       {aviso && <Toast message={aviso.texto} tone={aviso.tom} onClose={() => setAviso(null)} />}
     </div>
   );
