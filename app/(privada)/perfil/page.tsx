@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation"; // NOVO
 import Button from "../../components/Button";
+import Modal from "../../components/Modal"; // NOVO
 import SectionHeader from "../../components/SectionHeader";
 import TextField from "../../components/TextField";
 import Toast from "../../components/Toast";
 import { apiFetch } from "@/lib/api";
+import { clearToken } from "@/lib/auth"; // NOVO
 
 // Formato do usuário, igual ao que o GET /users/me devolve
 type Usuario = {
@@ -20,11 +23,12 @@ type Usuario = {
   phone: string | null;
 };
 
-// NOVO: campos do formulário de senha, todos começando vazios
+// Campos do formulário de senha, todos começando vazios
 const senhaVazia = { atual: "", nova: "", confirmar: "" };
 type ErrosSenha = Partial<Record<keyof typeof senhaVazia, string>>;
 
 export default function PerfilPage() {
+  const router = useRouter(); // NOVO
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [erro, setErro] = useState("");
 
@@ -33,10 +37,16 @@ export default function PerfilPage() {
   const [erroDados, setErroDados] = useState("");
   const [salvandoDados, setSalvandoDados] = useState(false);
 
-  // NOVO: formulário de troca de senha
+  // Formulário de troca de senha
   const [senha, setSenha] = useState(senhaVazia);
   const [errosSenha, setErrosSenha] = useState<ErrosSenha>({});
   const [salvandoSenha, setSalvandoSenha] = useState(false);
+
+  // NOVO: exclusão da conta
+  const [confirmandoExclusao, setConfirmandoExclusao] = useState(false);
+  const [palavra, setPalavra] = useState(""); // o que a pessoa digitou
+  const [excluindo, setExcluindo] = useState(false);
+  const [erroExclusao, setErroExclusao] = useState("");
 
   const [aviso, setAviso] = useState<string | null>(null);
 
@@ -100,7 +110,7 @@ export default function PerfilPage() {
     }
   }
 
-  // NOVO: confere os campos e troca a senha na API
+  // Confere os campos e troca a senha na API
   async function trocarSenha(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -124,6 +134,26 @@ export default function PerfilPage() {
       setErrosSenha({ atual: (erro as Error).message });
     } finally {
       setSalvandoSenha(false);
+    }
+  }
+
+  // NOVO: abre a confirmação sempre com o campo vazio
+  function abrirExclusao() {
+    setPalavra("");
+    setErroExclusao("");
+    setConfirmandoExclusao(true);
+  }
+
+  // NOVO: apaga a conta na API, apaga o token e volta para o login
+  async function apagarConta() {
+    setExcluindo(true);
+    try {
+      await apiFetch("/users/me", { method: "DELETE" });
+      clearToken();
+      router.replace("/login");
+    } catch (e) {
+      setErroExclusao((e as Error).message);
+      setExcluindo(false);
     }
   }
 
@@ -183,7 +213,7 @@ export default function PerfilPage() {
 
         {/* Lado direito: senha e exclusão */}
         <div className="fc-page" style={{ gap: "var(--space-6)" }}>
-          {/* NOVO: trocar senha */}
+          {/* Trocar senha */}
           <section className="fc-panel">
             <SectionHeader icon="lock" title="Trocar senha" />
 
@@ -218,8 +248,56 @@ export default function PerfilPage() {
               </div>
             </form>
           </section>
+
+          {/* NOVO: apagar a conta */}
+          <section className="fc-panel fc-panel-danger">
+            <SectionHeader
+              icon="alert"
+              title="Apagar minha conta"
+              description="Remove você, suas contas bancárias, movimentações, categorias e metas."
+            />
+            <div>
+              <Button variant="danger" icon="trash" onClick={abrirExclusao}>
+                Apagar minha conta
+              </Button>
+            </div>
+          </section>
         </div>
       </div>
+
+      {/* NOVO: confirmação de exclusão, com a palavra APAGAR */}
+      <Modal
+        open={confirmandoExclusao}
+        title="Apagar sua conta?"
+        onClose={() => setConfirmandoExclusao(false)}
+        width={460}
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setConfirmandoExclusao(false)}>
+              Cancelar
+            </Button>
+            <Button
+              variant="danger-solid"
+              icon="trash"
+              onClick={apagarConta}
+              disabled={palavra !== "APAGAR" || excluindo}
+            >
+              {excluindo ? "Apagando..." : "Apagar tudo"}
+            </Button>
+          </>
+        }
+      >
+        <p>
+          Isso apaga <strong>todas as suas contas, movimentações, categorias e metas</strong>. Não dá para desfazer.
+        </p>
+        <TextField
+          label="Digite APAGAR para confirmar"
+          value={palavra}
+          onChange={(e) => setPalavra(e.target.value)}
+          error={erroExclusao}
+          autoFocus
+        />
+      </Modal>
 
       {aviso && <Toast message={aviso} onClose={() => setAviso(null)} />}
     </div>
