@@ -11,9 +11,9 @@ export default function VisaoGeralPage() {
   }, []);
 
   return (
-    <main style={{ padding: "var(--space-8)" }}>
+    <div>
       <h1>Olá, {nome}!</h1>
       <p>Você está logado.</p>
-    </main>
+    </div>
   );
 }
