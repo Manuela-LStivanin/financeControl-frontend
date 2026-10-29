@@ -20,6 +20,10 @@ type Usuario = {
   phone: string | null;
 };
 
+// NOVO: campos do formulário de senha, todos começando vazios
+const senhaVazia = { atual: "", nova: "", confirmar: "" };
+type ErrosSenha = Partial<Record<keyof typeof senhaVazia, string>>;
+
 export default function PerfilPage() {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [erro, setErro] = useState("");
@@ -28,6 +32,11 @@ export default function PerfilPage() {
   const [dados, setDados] = useState({ name: "", email: "", phone: "", birthDate: "", legalName: "" });
   const [erroDados, setErroDados] = useState("");
   const [salvandoDados, setSalvandoDados] = useState(false);
+
+  // NOVO: formulário de troca de senha
+  const [senha, setSenha] = useState(senhaVazia);
+  const [errosSenha, setErrosSenha] = useState<ErrosSenha>({});
+  const [salvandoSenha, setSalvandoSenha] = useState(false);
 
   const [aviso, setAviso] = useState<string | null>(null);
 
@@ -91,6 +100,33 @@ export default function PerfilPage() {
     }
   }
 
+  // NOVO: confere os campos e troca a senha na API
+  async function trocarSenha(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const e: ErrosSenha = {};
+    if (!senha.atual) e.atual = "Informe a senha atual";
+    if (senha.nova.length < 8) e.nova = "A nova senha precisa ter pelo menos 8 caracteres";
+    if (senha.confirmar !== senha.nova) e.confirmar = "As senhas não conferem";
+    setErrosSenha(e);
+    if (Object.keys(e).length > 0) return;
+
+    setSalvandoSenha(true);
+    try {
+      await apiFetch("/users/me/password", {
+        method: "PUT",
+        body: JSON.stringify({ currentPassword: senha.atual, newPassword: senha.nova }),
+      });
+      setSenha(senhaVazia); // limpa os campos depois de trocar
+      setAviso("Senha alterada");
+    } catch (erro) {
+      // Ex.: 400 "Senha atual incorreta"
+      setErrosSenha({ atual: (erro as Error).message });
+    } finally {
+      setSalvandoSenha(false);
+    }
+  }
+
   // Enquanto a API não respondeu, não desenha o formulário
   if (!usuario) {
     return erro ? <p className="fc-field-msg fc-field-msg-error">{erro}</p> : null;
@@ -145,8 +181,44 @@ export default function PerfilPage() {
           </form>
         </section>
 
-        {/* Lado direito: senha e exclusão (próximas partes) */}
-        <div className="fc-page" style={{ gap: "var(--space-6)" }}></div>
+        {/* Lado direito: senha e exclusão */}
+        <div className="fc-page" style={{ gap: "var(--space-6)" }}>
+          {/* NOVO: trocar senha */}
+          <section className="fc-panel">
+            <SectionHeader icon="lock" title="Trocar senha" />
+
+            <form className="fc-form" onSubmit={trocarSenha} noValidate>
+              <TextField
+                label="Senha atual"
+                type="password"
+                value={senha.atual}
+                onChange={(e) => setSenha({ ...senha, atual: e.target.value })}
+                error={errosSenha.atual}
+              />
+              <div className="fc-form-row">
+                <TextField
+                  label="Nova senha"
+                  type="password"
+                  value={senha.nova}
+                  onChange={(e) => setSenha({ ...senha, nova: e.target.value })}
+                  error={errosSenha.nova}
+                />
+                <TextField
+                  label="Confirmar"
+                  type="password"
+                  value={senha.confirmar}
+                  onChange={(e) => setSenha({ ...senha, confirmar: e.target.value })}
+                  error={errosSenha.confirmar}
+                />
+              </div>
+              <div>
+                <Button type="submit" variant="secondary" disabled={salvandoSenha}>
+                  {salvandoSenha ? "Alterando..." : "Alterar senha"}
+                </Button>
+              </div>
+            </form>
+          </section>
+        </div>
       </div>
 
       {aviso && <Toast message={aviso} onClose={() => setAviso(null)} />}
