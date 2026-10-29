@@ -10,6 +10,7 @@ import SectionHeader from "../../components/SectionHeader";
 import TextField from "../../components/TextField";
 import Toast from "../../components/Toast";
 import { apiFetch } from "@/lib/api";
+import { formatBRL } from "@/lib/format"; // NOVO
 
 // Valores do formulário (tudo texto, porque vem dos campos)
 const formularioVazio = { description: "", targetAmount: "", deadline: "", currentAmount: "" };
@@ -31,7 +32,7 @@ export default function MetasPage() {
   const [apagando, setApagando] = useState<Meta | null>(null); // null = fechada
   const [excluindo, setExcluindo] = useState(false);
 
-  // NOVO: modal de guardar (null = fechado)
+  // Modal de guardar (null = fechado)
   const [guardandoEm, setGuardandoEm] = useState<Meta | null>(null);
   const [valorGuardar, setValorGuardar] = useState("");
   const [erroGuardar, setErroGuardar] = useState("");
@@ -145,14 +146,14 @@ export default function MetasPage() {
     }
   }
 
-  // NOVO: abre o modal de guardar para uma meta
+  // Abre o modal de guardar para uma meta
   function abrirGuardar(meta: Meta) {
     setGuardandoEm(meta);
     setValorGuardar("");
     setErroGuardar("");
   }
 
-  // NOVO: soma o valor ao que já foi guardado e envia o total para a API
+  // Soma o valor ao que já foi guardado e envia o total para a API
   async function confirmarGuardar(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!guardandoEm) return;
@@ -181,6 +182,11 @@ export default function MetasPage() {
     }
   }
 
+  // NOVO: números do resumo, calculados a partir da lista de metas
+  const totalGuardado = metas.reduce((soma, m) => soma + Number(m.currentAmount), 0);
+  const totalObjetivo = metas.reduce((soma, m) => soma + Number(m.targetAmount), 0);
+  const concluidas = metas.filter((m) => m.achieved).length;
+
   return (
     <div className="fc-page">
       <SectionHeader
@@ -195,13 +201,31 @@ export default function MetasPage() {
 
       {erro && <p className="fc-field-msg fc-field-msg-error">{erro}</p>}
 
+      {/* NOVO: faixa de resumo, só quando existe alguma meta */}
+      {metas.length > 0 && (
+        <div className="fc-strip">
+          <div>
+            <span className="fc-strip-label">Guardado</span>
+            <span className="fc-strip-n">{formatBRL(totalGuardado)}</span>
+          </div>
+          <div>
+            <span className="fc-strip-label">Objetivo somado</span>
+            <span className="fc-strip-n">{formatBRL(totalObjetivo)}</span>
+          </div>
+          <div>
+            <span className="fc-strip-label">Concluídas</span>
+            <span className="fc-strip-n">{concluidas} de {metas.length}</span>
+          </div>
+        </div>
+      )}
+
       {metas.length > 0 ? (
         <div className="fc-grid">
           {metas.map((m) => (
             <GoalCard
               key={m.id}
               meta={m}
-              onDeposit={() => abrirGuardar(m)} // NOVO
+              onDeposit={() => abrirGuardar(m)}
               onEdit={() => abrirEditar(m)}
               onDelete={() => setApagando(m)}
             />
@@ -275,7 +299,7 @@ export default function MetasPage() {
         </form>
       </Modal>
 
-      {/* NOVO: modal de guardar */}
+      {/* Modal de guardar */}
       <Modal
         open={guardandoEm !== null}
         title={`Guardar em “${guardandoEm?.description ?? "meta"}”`}

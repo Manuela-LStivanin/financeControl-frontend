@@ -407,3 +407,17 @@ body {
 .fc-goal-values { display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; }
 .fc-goal-amount { font-size: 26px; line-height: 32px; font-weight: 800; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
 .fc-goal-status { display: flex; flex-direction: column; }
+
+/* ===== Faixa de resumo ===== */
+.fc-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6) var(--space-12);
+  padding: var(--space-5) var(--space-6);
+  background: var(--surface-200);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+.fc-strip > div { display: flex; flex-direction: column; gap: var(--space-1); }
+.fc-strip-label { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }
+.fc-strip-n { font-size: 26px; line-height: 32px; font-weight: 800; font-variant-numeric: tabular-nums; }
