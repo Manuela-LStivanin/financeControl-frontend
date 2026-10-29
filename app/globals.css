@@ -371,3 +371,34 @@ body {
   background: var(--brand); color: var(--on-brand);
 }
 .fc-toast-danger .fc-toast-icon { background: var(--saida); }
+
+/* ===== Grade de cards ===== */
+.fc-grid { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+
+/* ===== Selos coloridos ===== */
+.fc-badge { display: inline-flex; align-items: center; gap: 4px; }
+.fc-badge-entrada { background: var(--brand-soft); color: var(--brand-ink); }
+.fc-badge-saida { background: var(--saida-soft); color: var(--saida); }
+
+/* ===== Card de meta ===== */
+.fc-goal {
+  display: flex; flex-direction: column; gap: var(--space-3);
+  padding: var(--space-6);
+  background: var(--surface-200);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+.fc-goal-head { display: flex; align-items: center; gap: var(--space-3); }
+.fc-goal-icon {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--brand-soft); color: var(--brand-ink);
+}
+.fc-goal.is-done .fc-goal-icon { background: var(--brand); color: var(--on-brand); }
+.fc-goal-id { flex: 1; min-width: 0; }
+.fc-goal-title { font-size: 16px; line-height: 22px; font-weight: 700; }
+.fc-meta { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; line-height: 18px; color: var(--ink-muted); }
+.fc-goal-track { height: 10px; border-radius: var(--radius-pill); background: var(--surface-300); overflow: hidden; }
+.fc-goal-fill { height: 100%; border-radius: var(--radius-pill); background: var(--brand-ink); transition: width 0.3s; }
+.fc-goal-pct { font-size: 15px; font-weight: 800; color: var(--brand-ink); }
