@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from "react";
 import Button from "../../components/Button";
+import ConfirmDialog from "../../components/ConfirmDialog"; // NOVO
 import EmptyState from "../../components/EmptyState";
 import GoalCard, { Meta } from "../../components/GoalCard";
-import Modal from "../../components/Modal"; // NOVO
+import Modal from "../../components/Modal";
 import SectionHeader from "../../components/SectionHeader";
-import TextField from "../../components/TextField"; // NOVO
-import Toast from "../../components/Toast"; // NOVO
+import TextField from "../../components/TextField";
+import Toast from "../../components/Toast";
 import { apiFetch } from "@/lib/api";
 
-// NOVO: valores do formulário (tudo texto, porque vem dos campos)
+// Valores do formulário (tudo texto, porque vem dos campos)
 const formularioVazio = { description: "", targetAmount: "", deadline: "", currentAmount: "" };
 type Erros = Partial<Record<keyof typeof formularioVazio, string>>;
 
@@ -18,7 +19,7 @@ export default function MetasPage() {
   const [metas, setMetas] = useState<Meta[]>([]);
   const [erro, setErro] = useState("");
 
-  // NOVO: modal de criar/editar
+  // Modal de criar/editar
   const [modalAberto, setModalAberto] = useState(false);
   const [editando, setEditando] = useState<Meta | null>(null); // null = criando
   const [form, setForm] = useState(formularioVazio);
@@ -26,8 +27,12 @@ export default function MetasPage() {
   const [erroApi, setErroApi] = useState("");
   const [salvando, setSalvando] = useState(false);
 
-  // NOVO: aviso de sucesso
-  const [aviso, setAviso] = useState<string | null>(null);
+  // NOVO: confirmação de exclusão
+  const [apagando, setApagando] = useState<Meta | null>(null); // null = fechada
+  const [excluindo, setExcluindo] = useState(false);
+
+  // NOVO: aviso agora tem tom (sucesso ou apagar), igual em categorias
+  const [aviso, setAviso] = useState<{ texto: string; tom: "success" | "danger" } | null>(null);
 
   // Busca as metas na API
   async function carregar() {
@@ -43,12 +48,12 @@ export default function MetasPage() {
     carregar();
   }, []);
 
-  // NOVO: atualiza um campo do formulário mantendo os outros
+  // Atualiza um campo do formulário mantendo os outros
   function atualizar(campo: keyof typeof formularioVazio, valor: string) {
     setForm({ ...form, [campo]: valor });
   }
 
-  // NOVO: abre o modal vazio, para criar
+  // Abre o modal vazio, para criar
   function abrirNova() {
     setEditando(null);
     setForm(formularioVazio);
@@ -57,7 +62,7 @@ export default function MetasPage() {
     setModalAberto(true);
   }
 
-  // NOVO: abre o modal preenchido, para editar
+  // Abre o modal preenchido, para editar
   function abrirEditar(meta: Meta) {
     setEditando(meta);
     setForm({
@@ -71,7 +76,7 @@ export default function MetasPage() {
     setModalAberto(true);
   }
 
-  // NOVO: confere os campos antes de enviar, com as mesmas regras da API
+  // Confere os campos antes de enviar, com as mesmas regras da API
   function validar(): Erros {
     const e: Erros = {};
     const hoje = new Date().toISOString().slice(0, 10);
@@ -84,7 +89,7 @@ export default function MetasPage() {
     return e;
   }
 
-  // NOVO: envia para a API (POST para criar, PUT para editar)
+  // Envia para a API (POST para criar, PUT para editar)
   async function salvar(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErroApi("");
@@ -109,12 +114,29 @@ export default function MetasPage() {
         await apiFetch("/goals", { method: "POST", body: JSON.stringify(corpo) });
       }
       setModalAberto(false);
-      setAviso(editando ? "Meta atualizada" : "Meta criada");
+      setAviso({ texto: editando ? "Meta atualizada" : "Meta criada", tom: "success" }); // NOVO: com tom
       await carregar();
     } catch (e) {
       setErroApi((e as Error).message);
     } finally {
       setSalvando(false);
+    }
+  }
+
+  // NOVO: apaga na API depois da confirmação
+  async function confirmarExclusao() {
+    if (!apagando) return;
+    setExcluindo(true);
+    try {
+      await apiFetch(`/goals/${apagando.id}`, { method: "DELETE" });
+      setApagando(null);
+      setAviso({ texto: "Meta apagada", tom: "danger" });
+      await carregar();
+    } catch (e) {
+      setErro((e as Error).message);
+      setApagando(null);
+    } finally {
+      setExcluindo(false);
     }
   }
 
@@ -127,7 +149,7 @@ export default function MetasPage() {
         title="Metas"
         count={metas.length}
         description="Quanto você quer juntar e até quando. Guarde valores aos poucos e acompanhe o progresso."
-        actions={<Button icon="plus" onClick={abrirNova}>Nova meta</Button>} // NOVO: onClick
+        actions={<Button icon="plus" onClick={abrirNova}>Nova meta</Button>}
       />
 
       {erro && <p className="fc-field-msg fc-field-msg-error">{erro}</p>}
@@ -135,20 +157,25 @@ export default function MetasPage() {
       {metas.length > 0 ? (
         <div className="fc-grid">
           {metas.map((m) => (
-            <GoalCard key={m.id} meta={m} onEdit={() => abrirEditar(m)} /> // NOVO: onEdit
+            <GoalCard
+              key={m.id}
+              meta={m}
+              onEdit={() => abrirEditar(m)}
+              onDelete={() => setApagando(m)} // NOVO
+            />
           ))}
         </div>
       ) : (
         <EmptyState
           icon="target"
           title="Nenhuma meta ainda"
-          action={<Button icon="plus" onClick={abrirNova}>Criar a primeira meta</Button>} // NOVO
+          action={<Button icon="plus" onClick={abrirNova}>Criar a primeira meta</Button>}
         >
           Uma meta tem valor alvo e prazo. Ex.: reserva de emergência até dezembro.
         </EmptyState>
       )}
 
-      {/* NOVO: modal de criar/editar */}
+      {/* Modal de criar/editar */}
       <Modal
         open={modalAberto}
         title={editando ? "Editar meta" : "Nova meta"}
@@ -206,8 +233,20 @@ export default function MetasPage() {
         </form>
       </Modal>
 
-      {/* NOVO: aviso de sucesso */}
-      {aviso && <Toast message={aviso} onClose={() => setAviso(null)} />}
+      {/* NOVO: confirmação de exclusão */}
+      <ConfirmDialog
+        open={apagando !== null}
+        title={`Apagar a meta ${apagando?.description ?? ""}?`}
+        confirmLabel="Apagar meta"
+        onConfirm={confirmarExclusao}
+        onCancel={() => setApagando(null)}
+        loading={excluindo}
+      >
+        <p>O progresso guardado nessa meta será perdido. Essa ação não pode ser desfeita.</p>
+      </ConfirmDialog>
+
+      {/* Aviso de sucesso (NOVO: agora com tom) */}
+      {aviso && <Toast message={aviso.texto} tone={aviso.tom} onClose={() => setAviso(null)} />}
     </div>
   );
 }
