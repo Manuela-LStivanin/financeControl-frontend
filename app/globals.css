@@ -446,3 +446,18 @@ body {
 /* ===== Formulários dentro de painéis ===== */
 .fc-form { display: flex; flex-direction: column; gap: var(--space-4); }
 .fc-hint { font-size: 13px; line-height: 18px; color: var(--ink-muted); margin-top: -8px; }
+
+/* ===== Visão geral: cards de resumo ===== */
+.fc-stats { display: grid; grid-template-columns: 1.35fr 1fr 1fr 1fr; gap: var(--space-4); }
+.fc-stat { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-5) var(--space-6); min-width: 0; }
+.fc-stat-top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.fc-stat-icon { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 10px; background: var(--brand-soft); color: var(--brand-ink); }
+.fc-stat-note { font-size: 13px; line-height: 18px; color: var(--ink-muted); }
+.fc-stat-brand { background: var(--brand); border-color: var(--brand); border-radius: var(--radius-xl); color: var(--on-brand); }
+.fc-stat-brand .fc-label, .fc-stat-brand .fc-stat-note { color: var(--on-brand-muted); }
+.fc-stat-brand .fc-amount { color: var(--on-brand); }
+.fc-stat-brand .fc-stat-icon { background: rgba(255, 255, 255, .18); color: var(--on-brand); }
+
+@media (max-width: 900px) {
+  .fc-stats { grid-template-columns: 1fr 1fr; }
+}
