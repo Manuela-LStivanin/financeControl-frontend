@@ -1,20 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link"; // NOVO
+import Link from "next/link";
 import { Conta } from "../../components/AccountCard";
-import Amount from "../../components/Amount"; // NOVO
-import EmptyState from "../../components/EmptyState"; // NOVO
-import Icon from "../../components/Icon"; // NOVO
+import Amount from "../../components/Amount";
+import EmptyState from "../../components/EmptyState";
+import GoalCard, { Meta } from "../../components/GoalCard"; // NOVO
+import Icon from "../../components/Icon";
 import SectionHeader from "../../components/SectionHeader";
 import StatCard from "../../components/StatCard";
-import { Movimentacao } from "../../components/TransactionTable"; // NOVO: tipo da Manu, no lugar do nosso
-import TransactionRow from "../../components/TransactionRow"; // NOVO
+import { Movimentacao } from "../../components/TransactionTable";
+import TransactionRow from "../../components/TransactionRow";
 import { apiFetch } from "@/lib/api";
 
-// NOVO: o "type Movimentacao" que estava aqui foi apagado; agora vem do TransactionTable da Manu
-
-type Categoria = { id: number; name: string }; // NOVO
+type Categoria = { id: number; name: string };
 
 // Devolve o mês de hoje no formato da API, ex.: "2026-10"
 function mesAtual() {
@@ -31,23 +30,26 @@ export default function VisaoGeralPage() {
   const [nome, setNome] = useState("");
   const [contas, setContas] = useState<Conta[]>([]);
   const [movimentacoes, setMovimentacoes] = useState<Movimentacao[]>([]);
-  const [categorias, setCategorias] = useState<Categoria[]>([]); // NOVO
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [metas, setMetas] = useState<Meta[]>([]); // NOVO
   const [carregado, setCarregado] = useState(false);
   const [erro, setErro] = useState("");
 
-  // Busca usuário, contas, movimentações e categorias ao mesmo tempo
+  // Busca tudo o que a Visão geral mostra, ao mesmo tempo
   async function carregar() {
     try {
-      const [usuario, listaContas, listaMov, listaCategorias] = await Promise.all([
+      const [usuario, listaContas, listaMov, listaCategorias, listaMetas] = await Promise.all([
         apiFetch("/users/me"),
         apiFetch("/accounts"),
         apiFetch("/transactions"),
-        apiFetch("/categories"), // NOVO
+        apiFetch("/categories"),
+        apiFetch("/goals"), // NOVO
       ]);
       setNome(usuario.name);
       setContas(listaContas);
       setMovimentacoes(listaMov);
-      setCategorias(listaCategorias); // NOVO
+      setCategorias(listaCategorias);
+      setMetas(listaMetas); // NOVO
       setCarregado(true);
     } catch (e) {
       setErro((e as Error).message);
@@ -72,12 +74,15 @@ export default function VisaoGeralPage() {
   const totalSaidas = saidas.reduce((soma, m) => soma + Number(m.amount), 0);
   const resultado = totalEntradas - totalSaidas;
 
-  // NOVO: as 5 mais recentes (a API já devolve da mais nova para a mais antiga)
+  // As 5 mais recentes (a API já devolve da mais nova para a mais antiga)
   const recentes = movimentacoes.slice(0, 5);
 
-  // NOVO: traduzem os ids em nomes para mostrar na lista
+  // Traduzem os ids em nomes para mostrar na lista
   const nomeConta = (id: number) => contas.find((c) => c.id === id)?.institution ?? "";
   const nomeCategoria = (id: number | null) => categorias.find((c) => c.id === id)?.name ?? null;
+
+  // NOVO: quantas metas já foram atingidas (o "achieved" vem pronto da API)
+  const concluidas = metas.filter((m) => m.achieved).length;
 
   // Textos do cabeçalho: "domingo, 1 de novembro" e "novembro"
   const hoje = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
@@ -113,7 +118,7 @@ export default function VisaoGeralPage() {
         />
       </div>
 
-      {/* NOVO: Contas e Últimas movimentações, lado a lado */}
+      {/* Contas e Últimas movimentações, lado a lado */}
       <div className="fc-two">
         <section className="fc-panel">
           <SectionHeader
@@ -183,6 +188,38 @@ export default function VisaoGeralPage() {
           )}
         </section>
       </div>
+
+      {/* NOVO: as 3 primeiras metas, só para ver (sem botões) */}
+      <section className="fc-page" style={{ gap: "var(--space-5)" }}>
+        <SectionHeader
+          icon="target"
+          title="Metas"
+          count={metas.length}
+          description={`${concluidas} de ${metas.length} concluídas`}
+          actions={
+            <Link href="/metas" className="fc-btn fc-btn-ghost fc-btn-sm">
+              Ver metas <Icon name="chevron" size={16} />
+            </Link>
+          }
+        />
+        {metas.length > 0 ? (
+          <div className="fc-grid">
+            {metas.slice(0, 3).map((m) => (
+              <GoalCard key={m.id} meta={m} />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            icon="target"
+            title="Nenhuma meta ainda"
+            action={
+              <Link href="/metas" className="fc-btn fc-btn-primary fc-btn-sm">
+                Criar meta
+              </Link>
+            }
+          />
+        )}
+      </section>
     </div>
   );
 }
