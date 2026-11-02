@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# financeControl - Front-end
 
-## Getting Started
+Interface web do financeControl, sistema de controle de finanças pessoais desenvolvido na disciplina de Programação Web e Mobile (UPF). Consome a [API financeControl](https://github.com/Henry-FTres/financeControl-backend) e é a versão web do projeto [financeControl em C++](https://github.com/Henry-FTres/financeControl).
 
-First, run the development server:
+Permite entrar ou criar uma conta (pessoa física ou jurídica), cadastrar contas bancárias, lançar entradas e saídas com o saldo atualizado na hora, organizar as movimentações por categoria e acompanhar metas financeiras.
+
+## Tecnologias
+
+- **Next.js 16** (App Router) com **React 19**
+- **TypeScript**
+- **CSS** próprio, com os tokens do design system em variáveis CSS (tema claro e escuro automático)
+- Fonte **Manrope** pelo `next/font`
+
+## Como rodar
+
+A **API precisa estar rodando** antes, em `http://localhost:3000` (veja o README do backend).
 
 ```bash
+# 1. instalar as dependências
+npm install
+
+# 2. iniciar em modo de desenvolvimento
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+O front-end fica disponível em `http://localhost:3001`. A porta é a 3001 porque a 3000 é usada pela API.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+O endereço da API fica em `lib/api.ts`, na constante `API_URL`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Telas
 
-## Learn More
+| Tela | Rota | O que faz |
+|---|---|---|
+| Login | `/login` | Entrar com e-mail e senha |
+| Cadastro | `/cadastro` | Criar conta de pessoa física (CPF) ou jurídica (CNPJ) |
+| Visão geral | `/visao-geral` | Saldo total, entradas e saídas do mês, contas, últimas movimentações e metas |
+| Contas | `/contas` | Cadastrar, editar e apagar contas bancárias |
+| Movimentações | `/movimentacoes` | Lançar, editar e apagar entradas e saídas, com filtros por conta, categoria e tipo |
+| Categorias | `/categorias` | Ver as categorias padrão e gerenciar as próprias |
+| Metas | `/metas` | Criar metas, guardar valores e acompanhar o progresso |
+| Perfil | `/perfil` | Editar os dados, trocar a senha e apagar a conta |
 
-To learn more about Next.js, take a look at the following resources:
+As telas de login e cadastro são públicas. As demais só abrem com o usuário logado; sem login, a pessoa é levada para `/login`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Estrutura
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+app/
+  (auth)/          telas públicas: login e cadastro
+  (privada)/       telas que exigem login, com o menu lateral
+  components/      componentes reutilizáveis (botões, campos, modal, cards, tabela...)
+  globals.css      tokens do design system e estilos dos componentes
+lib/
+  api.ts           chamadas à API (envia o token e trata erros)
+  auth.ts          guarda e lê o token de login
+  format.ts        formatação de valores em reais e de datas
+```
 
-## Deploy on Vercel
+Os parênteses em `(auth)` e `(privada)` criam grupos de rotas no Next.js: organizam as pastas e permitem um layout para cada grupo, sem aparecer no endereço.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Autenticação
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Ao entrar, o token recebido da API é guardado no navegador (`localStorage`) e enviado em todas as requisições no cabeçalho `Authorization: Bearer <token>`. Se a API responder que o token é inválido ou expirou, a pessoa é desconectada e volta para o login.
+
+## Autores
+
+- Manuela Larissa Stivanin - 210542
+- Henry Afonso Fiorentin Tres - 208487
