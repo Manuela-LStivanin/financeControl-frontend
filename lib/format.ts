@@ -11,7 +11,10 @@ export function formatBRL(valor: number | string): string {
 // Lê o que a pessoa digitou ("1.250,90") e devolve um número (1250.9).
 // Devolve NaN quando o texto não é um valor válido.
 export function parseBRL(texto: string): number {
-  const limpo = texto.replace(/\s|R\$/g, "").replace(/\./g, "").replace(",", ".");
+  let limpo = texto.replace(/\s|R\$/g, "");
+  // Com vírgula: a vírgula é o decimal e os pontos são milhar ("1.250,90").
+  // Sem vírgula: o ponto é o decimal ("12.50"), como no teclado numérico.
+  if (limpo.includes(",")) limpo = limpo.replace(/\./g, "").replace(",", ".");
   if (limpo === "" || !/^-?\d+(\.\d{1,2})?$/.test(limpo)) return NaN;
   return Number(limpo);
 }
