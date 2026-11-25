@@ -7,6 +7,7 @@ import Icon, { IconName } from "./Icon";
 import { apiFetch } from "@/lib/api";
 import { clearToken } from "@/lib/auth";
 
+// [LOCAL] Itens do menu lateral (endereço, nome e ícone de cada tela)
 // As telas da área privada, na ordem do protótipo
 const itens: { href: string; label: string; icon: IconName }[] = [
   { href: "/visao-geral", label: "Visão geral", icon: "home" },
@@ -17,6 +18,7 @@ const itens: { href: string; label: string; icon: IconName }[] = [
   { href: "/perfil", label: "Perfil", icon: "user" },
 ];
 
+// [LOCAL] Menu lateral: links das telas, nome do usuário e botão de sair
 export default function Sidebar() {
   const pathname = usePathname(); // endereço atual, ex.: "/contas"
 
@@ -34,6 +36,7 @@ export default function Sidebar() {
   }, []);
 
   // Sair: apaga o token e volta para o login
+  // [LOCAL] Função de sair (logout)
   function sair() {
     clearToken();
     router.replace("/login");
@@ -75,6 +78,7 @@ export default function Sidebar() {
             <strong>{usuario.name}</strong>
             <span>{usuario.email}</span>
           </div>
+          {/* [LOCAL] Botão "Sair" (ícone embaixo do menu, ao lado do nome) */}
           <button
             type="button"
             className="fc-iconbtn"

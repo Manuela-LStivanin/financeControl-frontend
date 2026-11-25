@@ -27,6 +27,7 @@ type Usuario = {
 const senhaVazia = { atual: "", nova: "", confirmar: "" };
 type ErrosSenha = Partial<Record<keyof typeof senhaVazia, string>>;
 
+// [LOCAL] Tela de perfil (rota /perfil): meus dados, trocar senha e apagar conta
 export default function PerfilPage() {
   const router = useRouter(); // NOVO
   const [usuario, setUsuario] = useState<Usuario | null>(null);
@@ -77,6 +78,7 @@ export default function PerfilPage() {
   }
 
   // Envia só os campos que fazem sentido para o tipo de pessoa
+  // [LOCAL] Salvar meus dados: PUT /users/me
   async function salvarDados(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!usuario) return;
@@ -111,6 +113,7 @@ export default function PerfilPage() {
   }
 
   // Confere os campos e troca a senha na API
+  // [LOCAL] Trocar senha: PUT /users/me/password
   async function trocarSenha(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -145,6 +148,7 @@ export default function PerfilPage() {
   }
 
   // NOVO: apaga a conta na API, apaga o token e volta para o login
+  // [LOCAL] Apagar minha conta: DELETE /users/me, apaga o token e volta ao login
   async function apagarConta() {
     setExcluindo(true);
     try {
@@ -175,6 +179,7 @@ export default function PerfilPage() {
       />
 
       <div className="fc-two">
+        {/* [LOCAL] Painel "Meus dados" (esquerda): formulário com botão de salvar */}
         {/* Meus dados */}
         <section className="fc-panel">
           <SectionHeader icon="user" title="Meus dados" description={isFisica ? "Pessoa física" : "Pessoa jurídica"} />
@@ -213,6 +218,7 @@ export default function PerfilPage() {
 
         {/* Lado direito: senha e exclusão */}
         <div className="fc-page" style={{ gap: "var(--space-6)" }}>
+          {/* [LOCAL] Painel "Trocar senha" (direita, em cima): botão "Alterar senha" chama trocarSenha */}
           {/* Trocar senha */}
           <section className="fc-panel">
             <SectionHeader icon="lock" title="Trocar senha" />
@@ -249,6 +255,7 @@ export default function PerfilPage() {
             </form>
           </section>
 
+          {/* [LOCAL] Painel vermelho "Apagar minha conta" (direita, embaixo): abre a confirmação */}
           {/* NOVO: apagar a conta */}
           <section className="fc-panel fc-panel-danger">
             <SectionHeader
@@ -265,6 +272,7 @@ export default function PerfilPage() {
         </div>
       </div>
 
+      {/* [LOCAL] Modal "Apagar sua conta?": precisa digitar APAGAR; botão "Apagar tudo" chama apagarConta */}
       {/* NOVO: confirmação de exclusão, com a palavra APAGAR */}
       <Modal
         open={confirmandoExclusao}

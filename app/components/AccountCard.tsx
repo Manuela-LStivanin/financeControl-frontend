@@ -22,6 +22,7 @@ type AccountCardProps = {
 const tipos = { CORRENTE: "Conta corrente", POUPANCA: "Poupança" };
 
 // Card de uma conta bancária: instituição, saldo, chave Pix e ações
+// [LOCAL] Card de conta (tela Contas)
 export default function AccountCard({ conta, movimentacoes, onEdit, onDelete }: AccountCardProps) {
   return (
     <article className="fc-card fc-account">
@@ -36,6 +37,7 @@ export default function AccountCard({ conta, movimentacoes, onEdit, onDelete }: 
             {tipos[conta.accountType]} · {conta.accountNumber}
           </div>
         </div>
+        {/* [LOCAL] Botões do card: lápis = editar conta, lixeira = apagar conta */}
         <button type="button" className="fc-iconbtn" onClick={onEdit} aria-label={`Editar ${conta.institution}`} title="Editar">
           <Icon name="edit" size={18} />
         </button>
@@ -53,6 +55,7 @@ export default function AccountCard({ conta, movimentacoes, onEdit, onDelete }: 
       {/* Rodapé: chave Pix e atalho para as movimentações da conta */}
       <footer className="fc-account-foot">
         <span className="fc-meta">{conta.pixKey ? `Pix: ${conta.pixKey}` : "Sem chave Pix"}</span>
+        {/* [LOCAL] Link "X movimentações": abre as movimentações filtradas por esta conta */}
         <Link href={`/movimentacoes?accountId=${conta.id}`} className="fc-link">
           {movimentacoes} {movimentacoes === 1 ? "movimentação" : "movimentações"}
           <Icon name="chevron" size={16} />

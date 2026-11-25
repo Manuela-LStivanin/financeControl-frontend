@@ -24,6 +24,7 @@ type TransactionTableProps = {
 };
 
 // Tabela de movimentações: data, quem, categoria, conta, tipo, valor e ações
+// [LOCAL] Tabela do extrato (tela Movimentações)
 export default function TransactionTable({ movimentacoes, nomeConta, nomeCategoria, onEdit, onDelete }: TransactionTableProps) {
   return (
     <div className="fc-card fc-tablewrap">
@@ -72,6 +73,7 @@ export default function TransactionTable({ movimentacoes, nomeConta, nomeCategor
                 <td className="fc-num"><Amount value={m.amount} type={m.transactionType} /></td>
 
                 <td className="fc-actcol">
+                  {/* [LOCAL] Botões da linha: lápis = editar movimentação, lixeira = apagar */}
                   <div className="fc-rowactions">
                     <button type="button" className="fc-iconbtn" onClick={() => onEdit(m)} aria-label={`Editar ${m.counterparty}`} title="Editar">
                       <Icon name="edit" size={18} />

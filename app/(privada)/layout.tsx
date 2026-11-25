@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
 import Sidebar from "../components/Sidebar";
 
+// [LOCAL] Proteção das telas privadas: sem token, volta para /login; com token, mostra menu + tela
 // Moldura da área privada: só mostra as telas para quem está logado.
 // Sem token, manda de volta para o login.
 export default function PrivadaLayout({ children }: Readonly<{ children: React.ReactNode }>) {

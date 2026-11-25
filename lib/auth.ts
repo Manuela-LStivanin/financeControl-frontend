@@ -1,6 +1,7 @@
 // Funções para guardar, ler e apagar o token JWT no navegador
 const TOKEN_KEY = "fc_token";
 
+// [LOCAL] Token no navegador: salvar, ler e apagar (localStorage, chave "fc_token")
 export function saveToken(token: string) {
   localStorage.setItem(TOKEN_KEY, token);
 }

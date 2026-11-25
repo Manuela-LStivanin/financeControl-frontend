@@ -16,6 +16,7 @@ import { formatBRL } from "@/lib/format"; // NOVO
 const formularioVazio = { description: "", targetAmount: "", deadline: "", currentAmount: "" };
 type Erros = Partial<Record<keyof typeof formularioVazio, string>>;
 
+// [LOCAL] Tela de metas (rota /metas): criar, editar, guardar valor e apagar
 export default function MetasPage() {
   const [metas, setMetas] = useState<Meta[]>([]);
   const [erro, setErro] = useState("");
@@ -96,6 +97,7 @@ export default function MetasPage() {
   }
 
   // Envia para a API (POST para criar, PUT para editar)
+  // [LOCAL] Salvar meta: POST /goals (criar) ou PUT /goals/:id (editar)
   async function salvar(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErroApi("");
@@ -130,6 +132,7 @@ export default function MetasPage() {
   }
 
   // Apaga na API depois da confirmação
+  // [LOCAL] Excluir meta: DELETE /goals/:id
   async function confirmarExclusao() {
     if (!apagando) return;
     setExcluindo(true);
@@ -154,6 +157,7 @@ export default function MetasPage() {
   }
 
   // Soma o valor ao que já foi guardado e envia o total para a API
+  // [LOCAL] Guardar valor na meta: soma ao valor atual e envia PUT /goals/:id
   async function confirmarGuardar(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!guardandoEm) return;
@@ -189,6 +193,7 @@ export default function MetasPage() {
 
   return (
     <div className="fc-page">
+      {/* [LOCAL] Cabeçalho com o botão "Nova meta" (canto superior direito) */}
       <SectionHeader
         level="page"
         icon="target"
@@ -241,6 +246,7 @@ export default function MetasPage() {
         </EmptyState>
       )}
 
+      {/* [LOCAL] Modal "Nova meta" / "Editar meta": botão "Criar meta"/"Salvar" chama salvar */}
       {/* Modal de criar/editar */}
       <Modal
         open={modalAberto}
@@ -299,6 +305,7 @@ export default function MetasPage() {
         </form>
       </Modal>
 
+      {/* [LOCAL] Modal "Guardar em ...": botão "Guardar" chama confirmarGuardar */}
       {/* Modal de guardar */}
       <Modal
         open={guardandoEm !== null}

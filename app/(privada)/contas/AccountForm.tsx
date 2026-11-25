@@ -19,6 +19,7 @@ type AccountFormProps = {
 type Erros = { institution?: string; accountNumber?: string; balance?: string };
 
 // Modal de criar ou editar uma conta bancária
+// [LOCAL] Modal "Nova conta" / "Editar conta"
 export default function AccountForm({ conta, onClose, onSaved }: AccountFormProps) {
   const editando = conta !== null;
 
@@ -48,6 +49,7 @@ export default function AccountForm({ conta, onClose, onSaved }: AccountFormProp
   }
 
   // Envia para a API: POST para criar, PATCH para editar
+  // [LOCAL] Salvar conta: POST /accounts (criar) ou PATCH /accounts/:id (editar)
   async function salvar(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErroApi("");
@@ -88,6 +90,7 @@ export default function AccountForm({ conta, onClose, onSaved }: AccountFormProp
       onClose={onClose}
       footer={
         <>
+          {/* [LOCAL] Botões do modal: "Cancelar" fecha; "Adicionar conta"/"Salvar alterações" chama salvar */}
           <Button variant="secondary" onClick={onClose}>Cancelar</Button>
           <Button type="submit" form="form-conta" icon="check" disabled={salvando}>
             {salvando ? "Salvando..." : editando ? "Salvar alterações" : "Adicionar conta"}
@@ -116,6 +119,7 @@ export default function AccountForm({ conta, onClose, onSaved }: AccountFormProp
         <TextField label="Chave Pix (opcional)" placeholder="E-mail, CPF, telefone ou aleatória" value={form.pixKey}
           onChange={(e) => atualizar("pixKey", e.target.value)} />
 
+        {/* [LOCAL] Campo "Saldo inicial": só aparece ao criar; ao editar, o saldo fica bloqueado */}
         {/* Saldo: informado só na criação; depois, só as movimentações mudam o saldo */}
         {editando ? (
           <div className="fc-note">

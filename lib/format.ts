@@ -2,6 +2,7 @@
 
 const reais = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
+// [LOCAL] Formatação de dinheiro (formatBRL), leitura do valor digitado (parseBRL) e datas (formatDate)
 // 1500.5 vira "R$ 1.500,50"
 export function formatBRL(valor: number | string): string {
   return reais.format(Number(valor) || 0);

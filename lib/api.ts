@@ -3,6 +3,7 @@ import { clearToken, getToken } from "./auth";
 // Endereço da API 
 //um arquivo para isso porque se o endereço mudar, ele teria que trocar em todas as páginas. 
 // Aqui troca num lugar só.
+// [LOCAL] Endereço da API usado por todo o site
 export const API_URL = "http://localhost:3000/api";
 
 // Transforma o corpo de erro da API em uma mensagem só.
@@ -15,6 +16,7 @@ export function apiErrorMessage(dados: { message?: string | string[] }): string 
 
 // Chama uma rota PRIVADA da API, já com o token.
 // Exemplo: const contas = await apiFetch("/accounts");
+// [LOCAL] apiFetch: toda chamada a rota privada passa aqui (envia o token; 401 = desloga)
 export async function apiFetch(caminho: string, opcoes: RequestInit = {}) {
   const resposta = await fetch(`${API_URL}${caminho}`, {
     ...opcoes,

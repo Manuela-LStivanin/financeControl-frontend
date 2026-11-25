@@ -14,6 +14,7 @@ import { apiFetch } from "@/lib/api";
 // Formato de uma categoria, igual ao que a API devolve
 type Categoria = { id: number; name: string; userId: number | null };
 
+// [LOCAL] Tela de categorias (rota /categorias): padrão (só leitura) e minhas (criar, renomear, apagar)
 export default function CategoriasPage() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [erro, setErro] = useState("");
@@ -63,6 +64,7 @@ export default function CategoriasPage() {
   }
 
   // Valida e envia para a API (POST para criar, PUT para renomear)
+  // [LOCAL] Salvar categoria: POST /categories (criar) ou PUT /categories/:id (renomear)
   async function salvar(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -97,6 +99,7 @@ export default function CategoriasPage() {
   }
 
   // Apaga na API depois da confirmação
+  // [LOCAL] Excluir categoria: DELETE /categories/:id
   async function confirmarExclusao() {
     if (!apagando) return;
     setExcluindo(true);
@@ -119,6 +122,7 @@ export default function CategoriasPage() {
 
   return (
     <div className="fc-page">
+      {/* [LOCAL] Cabeçalho com o botão "Nova categoria" (canto superior direito) */}
       <SectionHeader
         level="page"
         icon="tag"
@@ -144,6 +148,7 @@ export default function CategoriasPage() {
                 <div key={c.id} className="fc-catrow">
                   <span className="fc-caticon"><Icon name="tag" size={18} /></span>
                   <span className="fc-catname">{c.name}</span>
+                  {/* [LOCAL] Botões de cada categoria minha: lápis = renomear, lixeira = apagar */}
                   <button
                     type="button"
                     className="fc-iconbtn"
@@ -190,6 +195,7 @@ export default function CategoriasPage() {
         </section>
       </div>
 
+      {/* [LOCAL] Modal "Nova categoria" / "Renomear categoria": botão "Criar categoria"/"Salvar" chama salvar */}
       {/* Modal de criar/renomear */}
       <Modal
         open={modalAberto}
