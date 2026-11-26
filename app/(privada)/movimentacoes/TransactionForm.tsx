@@ -35,7 +35,6 @@ function hoje() {
 }
 
 // Modal de registrar ou editar uma movimentação (entrada ou saída)
-// [LOCAL] Modal "Nova movimentação" / "Editar movimentação"
 export default function TransactionForm({ movimentacao, contas, categorias, contaInicial, onClose, onSaved }: TransactionFormProps) {
   const editando = movimentacao !== null;
 
@@ -72,7 +71,6 @@ export default function TransactionForm({ movimentacao, contas, categorias, cont
   }
 
   // Envia para a API: POST para registrar, PATCH para editar. A API atualiza o saldo da conta.
-  // [LOCAL] Salvar movimentação: POST /transactions (criar) ou PATCH /transactions/:id (editar)
   async function salvar(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErroApi("");
@@ -122,7 +120,7 @@ export default function TransactionForm({ movimentacao, contas, categorias, cont
       onClose={onClose}
       footer={
         <>
-          {/* [LOCAL] Botões do modal: "Cancelar" fecha; "Registrar saída/entrada" ou "Salvar alterações" chama salvar */}
+          {/* Botões de cancelar e salvar */}
           <Button variant="secondary" onClick={onClose}>Cancelar</Button>
           <Button type="submit" form="form-movimentacao" icon="check" disabled={salvando}>
             {salvando ? "Salvando..." : editando ? "Salvar alterações" : `Registrar ${saida ? "saída" : "entrada"}`}
@@ -131,7 +129,6 @@ export default function TransactionForm({ movimentacao, contas, categorias, cont
       }
     >
       <form id="form-movimentacao" onSubmit={salvar} noValidate className="fc-modal-form">
-        {/* [LOCAL] Seletor "Saída | Entrada" do formulário */}
         {/* Tipo: saída ou entrada */}
         <SegmentedControl
           label="Tipo"

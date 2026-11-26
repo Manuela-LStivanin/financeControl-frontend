@@ -11,7 +11,7 @@ import SectionHeader from "../../components/SectionHeader";
 import AccountForm from "./AccountForm";
 import { apiFetch } from "@/lib/api";
 
-// [LOCAL] Tela de contas (rota /contas): lista, cria, edita e apaga contas bancárias
+// Tela de contas bancárias
 export default function ContasPage() {
   const [contas, setContas] = useState<Conta[]>([]);
   const [movPorConta, setMovPorConta] = useState<Record<number, number>>({}); // id da conta -> quantidade
@@ -25,7 +25,6 @@ export default function ContasPage() {
   const [excluindo, setExcluindo] = useState(false);
 
   // Busca as contas e as movimentações ao mesmo tempo, e conta as movimentações de cada conta
-  // [LOCAL] Listar contas: GET /accounts (+ /transactions para contar as movimentações)
   async function carregar() {
     try {
       const [listaContas, listaMov] = await Promise.all([
@@ -57,7 +56,6 @@ export default function ContasPage() {
   }
 
   // Apaga na API depois da confirmação
-  // [LOCAL] Excluir conta: DELETE /accounts/:id (depois de confirmar no diálogo)
   async function confirmarExclusao() {
     if (!apagando) return;
     setExcluindo(true);
@@ -81,7 +79,7 @@ export default function ContasPage() {
 
   return (
     <div className="fc-page">
-      {/* [LOCAL] Cabeçalho com o botão "Nova conta" (canto superior direito): abre o modal */}
+      {/* Cabeçalho com o botão de nova conta */}
       <SectionHeader
         level="page"
         icon="wallet"
@@ -94,7 +92,6 @@ export default function ContasPage() {
 
       {erro && <p className="fc-field-msg fc-field-msg-error">{erro}</p>}
 
-      {/* [LOCAL] Faixa de resumo: saldo somado, nº de correntes e de poupanças */}
       {/* Faixa de resumo */}
       <div className="fc-strip">
         <div>
@@ -123,7 +120,7 @@ export default function ContasPage() {
               onDelete={() => setApagando(conta)}
             />
           ))}
-          {/* [LOCAL] Card "Adicionar conta" (último da grade): abre o modal de nova conta */}
+          {/* Card para adicionar uma conta */}
           <button type="button" className="fc-addcard" onClick={() => setFormConta(null)}>
             <Icon name="plus" size={22} />
             Adicionar conta
@@ -144,7 +141,6 @@ export default function ContasPage() {
         <AccountForm conta={formConta} onClose={() => setFormConta(undefined)} onSaved={aoSalvar} />
       )}
 
-      {/* [LOCAL] Diálogo "Apagar a conta?": botão "Apagar conta" chama confirmarExclusao */}
       {/* Confirmação de exclusão: avisa quantas movimentações vão junto */}
       <ConfirmDialog
         open={apagando !== null}

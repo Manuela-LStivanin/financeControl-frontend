@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
 
-// [LOCAL] Rota "/": redireciona para /visao-geral (logado) ou /login
 // Página inicial: não mostra nada, só encaminha
 // para o painel (se já estiver logado) ou para o login
 export default function Home() {

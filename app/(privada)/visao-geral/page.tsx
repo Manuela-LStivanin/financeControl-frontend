@@ -26,7 +26,7 @@ function lancamentos(n: number) {
   return n === 1 ? "1 lançamento" : `${n} lançamentos`;
 }
 
-// [LOCAL] Tela Visão geral (rota /visao-geral): resumo do mês, contas, últimas movimentações e metas
+// Tela inicial com o resumo das finanças
 export default function VisaoGeralPage() {
   const [nome, setNome] = useState("");
   const [contas, setContas] = useState<Conta[]>([]);
@@ -37,7 +37,6 @@ export default function VisaoGeralPage() {
   const [erro, setErro] = useState("");
 
   // Busca tudo o que a Visão geral mostra, ao mesmo tempo
-  // [LOCAL] Carrega usuário, contas, movimentações, categorias e metas (Promise.all)
   async function carregar() {
     try {
       const [usuario, listaContas, listaMov, listaCategorias, listaMetas] = await Promise.all([
@@ -65,7 +64,6 @@ export default function VisaoGeralPage() {
   if (erro) return <p className="fc-field-msg fc-field-msg-error">{erro}</p>;
   if (!carregado) return null;
 
-  // [LOCAL] Cálculos do resumo: saldo total, entradas/saídas do mês e resultado
   // Saldo total: soma o saldo de todas as contas
   const saldoTotal = contas.reduce((soma, c) => soma + Number(c.balance), 0);
 
@@ -102,7 +100,6 @@ export default function VisaoGeralPage() {
         description="Um resumo das suas contas, movimentações e metas."
       />
 
-      {/* [LOCAL] 4 cards do topo: saldo total, entradas do mês, saídas do mês, resultado */}
       {/* Os 4 cards de resumo */}
       <div className="fc-stats">
         <StatCard
@@ -122,7 +119,6 @@ export default function VisaoGeralPage() {
         />
       </div>
 
-      {/* [LOCAL] Painéis "Contas" (link "Ver todas") e "Últimas movimentações" (link "Ver extrato") */}
       {/* Contas e Últimas movimentações, lado a lado */}
       <div className="fc-two">
         <section className="fc-panel">
@@ -194,7 +190,6 @@ export default function VisaoGeralPage() {
         </section>
       </div>
 
-      {/* [LOCAL] Seção "Metas": as 3 primeiras, só para ver */}
       {/* NOVO: as 3 primeiras metas, só para ver (sem botões) */}
       <section className="fc-page" style={{ gap: "var(--space-5)" }}>
         <SectionHeader

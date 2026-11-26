@@ -21,7 +21,6 @@ type GoalCardProps = {
 };
 
 // Card de uma meta: descrição, prazo, valores, barra de progresso e situação
-// [LOCAL] Card de meta: progresso, porcentagem e botões (tela Metas e Visão geral)
 export default function GoalCard({ meta, onDeposit, onEdit, onDelete }: GoalCardProps) {
   const atual = Number(meta.currentAmount);
   const alvo = Number(meta.targetAmount);
@@ -74,7 +73,7 @@ export default function GoalCard({ meta, onDeposit, onEdit, onDelete }: GoalCard
           <span className="fc-goal-pct">{pct}%</span>
           <span className="fc-meta">{meta.achieved ? "meta atingida" : `faltam ${formatBRL(falta)}`}</span>
         </span>
-        {/* [LOCAL] Botões do card de meta: "Guardar" (some quando atingida), lápis = editar, lixeira = apagar */}
+        {/* Botões de guardar, editar e apagar */}
         <span style={{ display: "flex", alignItems: "center", gap: 2 }}>
           {onDeposit && !meta.achieved && (
             <Button size="sm" variant="secondary" icon="plus" onClick={onDeposit}>

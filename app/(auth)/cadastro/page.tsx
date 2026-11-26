@@ -28,7 +28,7 @@ type Erros = Partial<Record<Campo, string>>;
 // Deixa só os números de um texto ("123.456.789-00" vira "12345678900")
 const somenteNumeros = (texto: string) => texto.replace(/\D/g, "");
 
-// [LOCAL] Tela de cadastro (rota /cadastro): pessoa física ou jurídica
+// Tela de cadastro
 export default function CadastroPage() {
   const router = useRouter();
 
@@ -45,7 +45,6 @@ export default function CadastroPage() {
   }
 
   // Confere os campos antes de enviar, com as mesmas regras da API
-  // [LOCAL] Validação do cadastro no site: CPF 11 dígitos, CNPJ 14, senha 8+, confirmar senha
   function validar(): Erros {
     const e: Erros = {};
     if (form.name.trim().length < 3) e.name = "Informe seu nome";
@@ -71,7 +70,6 @@ export default function CadastroPage() {
   }
 
   // Valida, envia o cadastro para a API e, se der certo, já entra logado
-  // [LOCAL] Envio do cadastro: POST /auth/register e já entra logado
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErroApi("");
@@ -110,7 +108,6 @@ export default function CadastroPage() {
         <p className="fc-auth-desc">Pessoa física ou jurídica. Leva menos de um minuto.</p>
       </div>
 
-      {/* [LOCAL] Seletor "Pessoa física | Pessoa jurídica" */}
       {/* Tipo de pessoa: define quais documentos aparecem abaixo */}
       <SegmentedControl
         label="Tipo de pessoa"
@@ -157,7 +154,7 @@ export default function CadastroPage() {
         </p>
       )}
 
-      {/* [LOCAL] Botão "Criar conta": envia o cadastro (chama handleSubmit) */}
+      {/* Botão de criar conta */}
       <Button type="submit" disabled={carregando}>
         {carregando ? "Criando conta..." : "Criar conta"}
       </Button>

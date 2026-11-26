@@ -10,7 +10,7 @@ import { saveToken } from "@/lib/auth";
 
 type Erros = { email?: string; password?: string };
 
-// [LOCAL] Tela de login (rota /login)
+// Tela de login
 export default function LoginPage() {
   const router = useRouter();
 
@@ -29,7 +29,6 @@ export default function LoginPage() {
   }
 
   // Valida, envia o login para a API e, se der certo, guarda o token e abre o painel
-  // [LOCAL] Envio do login: POST /auth/login, guarda o token e vai para /visao-geral
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErroApi("");
@@ -93,7 +92,7 @@ export default function LoginPage() {
         </p>
       )}
 
-      {/* [LOCAL] Botão "Entrar": envia o formulário (chama handleSubmit) */}
+      {/* Botão de entrar */}
       <Button type="submit" disabled={carregando}>
         {carregando ? "Entrando..." : "Entrar"}
       </Button>

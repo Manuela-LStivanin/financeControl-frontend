@@ -20,7 +20,6 @@ type Categoria = { id: number; name: string };
 type Filtros = { busca: string; accountId: string; categoryId: string; tipo: string };
 
 // Tela de movimentações: filtros, resumo, tabela e os modais de registrar, editar e apagar
-// [LOCAL] Tela de movimentações (extrato)
 export default function Movimentacoes({ contaInicial }: { contaInicial: string }) {
   const [movimentacoes, setMovimentacoes] = useState<Movimentacao[]>([]);
   const [contas, setContas] = useState<Conta[]>([]);
@@ -40,7 +39,6 @@ export default function Movimentacoes({ contaInicial }: { contaInicial: string }
   const [aviso, setAviso] = useState<{ texto: string; tom: "success" | "danger" } | null>(null);
 
   // Busca movimentações, contas e categorias ao mesmo tempo
-  // [LOCAL] Listar movimentações: GET /transactions, /accounts e /categories
   async function carregar() {
     try {
       const [listaMov, listaContas, listaCategorias] = await Promise.all([
@@ -69,7 +67,6 @@ export default function Movimentacoes({ contaInicial }: { contaInicial: string }
     setFiltros({ ...filtros, [campo]: valor });
   }
 
-  // [LOCAL] Filtros aplicados no próprio site: conta, categoria, tipo e busca por texto
   // Aplica os filtros na lista (a API já devolve da mais recente para a mais antiga)
   const busca = filtros.busca.trim().toLowerCase();
   const visiveis = movimentacoes
@@ -94,7 +91,6 @@ export default function Movimentacoes({ contaInicial }: { contaInicial: string }
   }
 
   // Apaga na API depois da confirmação; a API desfaz o efeito no saldo
-  // [LOCAL] Excluir movimentação: DELETE /transactions/:id
   async function confirmarExclusao() {
     if (!apagando) return;
     setExcluindo(true);
@@ -113,7 +109,7 @@ export default function Movimentacoes({ contaInicial }: { contaInicial: string }
 
   return (
     <div className="fc-page">
-      {/* [LOCAL] Cabeçalho com o botão "Nova movimentação" (canto superior direito): abre o modal */}
+      {/* Cabeçalho com o botão de nova movimentação */}
       <SectionHeader
         level="page"
         icon="swap"
@@ -130,7 +126,6 @@ export default function Movimentacoes({ contaInicial }: { contaInicial: string }
 
       {erro && <p className="fc-field-msg fc-field-msg-error">{erro}</p>}
 
-      {/* [LOCAL] Barra de filtros: busca, conta, categoria, tipo e botão "Limpar" */}
       {/* Filtros */}
       <div className="fc-card fc-filters">
         <TextField label="Buscar" hideLabel placeholder="Buscar por quem pagou ou recebeu"
@@ -154,7 +149,6 @@ export default function Movimentacoes({ contaInicial }: { contaInicial: string }
         )}
       </div>
 
-      {/* [LOCAL] Resumo do que está filtrado: entradas, saídas, resultado e nº de lançamentos */}
       {/* Faixa de resumo do que está filtrado */}
       <div className="fc-strip">
         <div>
@@ -206,7 +200,6 @@ export default function Movimentacoes({ contaInicial }: { contaInicial: string }
         />
       )}
 
-      {/* [LOCAL] Diálogo "Apagar esta movimentação?": botão "Apagar movimentação" chama confirmarExclusao */}
       {/* Confirmação de exclusão: mostra o ajuste que vai acontecer no saldo */}
       <ConfirmDialog
         open={apagando !== null}

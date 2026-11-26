@@ -1,7 +1,6 @@
 import Icon from "../components/Icon";
 import AuthTabs from "./AuthTabs";
 
-// [LOCAL] Moldura de login e cadastro: painel azul à esquerda e formulário à direita
 // Moldura das telas de login e cadastro: painel da marca à esquerda
 // e, à direita, as abas "Entrar | Criar conta" com o formulário da página atual
 export default function AuthLayout({ children }: Readonly<{ children: React.ReactNode }>) {
