@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Conta } from "../../components/AccountCard";
 import Amount from "../../components/Amount";
 import EmptyState from "../../components/EmptyState";
-import GoalCard, { Meta } from "../../components/GoalCard"; // NOVO
+import GoalCard, { Meta } from "../../components/GoalCard";
 import Icon from "../../components/Icon";
 import SectionHeader from "../../components/SectionHeader";
 import StatCard from "../../components/StatCard";
@@ -32,7 +32,7 @@ export default function VisaoGeralPage() {
   const [contas, setContas] = useState<Conta[]>([]);
   const [movimentacoes, setMovimentacoes] = useState<Movimentacao[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [metas, setMetas] = useState<Meta[]>([]); // NOVO
+  const [metas, setMetas] = useState<Meta[]>([]);
   const [carregado, setCarregado] = useState(false);
   const [erro, setErro] = useState("");
 
@@ -44,13 +44,13 @@ export default function VisaoGeralPage() {
         apiFetch("/accounts"),
         apiFetch("/transactions"),
         apiFetch("/categories"),
-        apiFetch("/goals"), // NOVO
+        apiFetch("/goals"),
       ]);
       setNome(usuario.name);
       setContas(listaContas);
       setMovimentacoes(listaMov);
       setCategorias(listaCategorias);
-      setMetas(listaMetas); // NOVO
+      setMetas(listaMetas);
       setCarregado(true);
     } catch (e) {
       setErro((e as Error).message);
@@ -82,7 +82,7 @@ export default function VisaoGeralPage() {
   const nomeConta = (id: number) => contas.find((c) => c.id === id)?.institution ?? "";
   const nomeCategoria = (id: number | null) => categorias.find((c) => c.id === id)?.name ?? null;
 
-  // NOVO: quantas metas já foram atingidas (o "achieved" vem pronto da API)
+  // Quantas metas já foram atingidas (o "achieved" vem pronto da API)
   const concluidas = metas.filter((m) => m.achieved).length;
 
   // Textos do cabeçalho: "domingo, 1 de novembro" e "novembro"
@@ -190,7 +190,7 @@ export default function VisaoGeralPage() {
         </section>
       </div>
 
-      {/* NOVO: as 3 primeiras metas, só para ver (sem botões) */}
+      {/* As 3 primeiras metas, só para ver (sem botões) */}
       <section className="fc-page" style={{ gap: "var(--space-5)" }}>
         <SectionHeader
           icon="target"

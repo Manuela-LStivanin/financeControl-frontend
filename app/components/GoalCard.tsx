@@ -1,6 +1,6 @@
 import Button from "./Button";
 import Icon from "./Icon";
-import { formatBRL, formatDate } from "@/lib/format"; // NOVO: formatBRL
+import { formatBRL, formatDate } from "@/lib/format";
 
 // Formato de uma meta, igual ao que a API devolve
 export type Meta = {
@@ -28,7 +28,7 @@ export default function GoalCard({ meta, onDeposit, onEdit, onDelete }: GoalCard
   // Porcentagem guardada, limitada a 100 (pode ter guardado mais que o alvo)
   const pct = alvo > 0 ? Math.min(100, Math.round((atual / alvo) * 100)) : 0;
 
-  // NOVO: quanto falta para chegar no alvo (nunca negativo)
+  // Quanto falta para chegar no alvo (nunca negativo)
   const falta = Math.max(0, alvo - atual);
 
   // Atrasada: não foi atingida e o prazo já passou
@@ -50,7 +50,7 @@ export default function GoalCard({ meta, onDeposit, onEdit, onDelete }: GoalCard
         {atrasada && <span className="fc-badge fc-badge-saida"><Icon name="alert" size={13} />Atrasada</span>}
       </header>
 
-      {/* NOVO: quanto já guardou, "de" quanto quer juntar */}
+      {/* Quanto já guardou, "de" quanto quer juntar */}
       <div className="fc-goal-values">
         <span className="fc-goal-amount">{formatBRL(atual)}</span>
         <span className="fc-meta">de {formatBRL(alvo)}</span>
@@ -68,7 +68,7 @@ export default function GoalCard({ meta, onDeposit, onEdit, onDelete }: GoalCard
       </div>
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        {/* NOVO: porcentagem com o que falta embaixo */}
+        {/* Porcentagem com o que falta embaixo */}
         <span className="fc-goal-status">
           <span className="fc-goal-pct">{pct}%</span>
           <span className="fc-meta">{meta.achieved ? "meta atingida" : `faltam ${formatBRL(falta)}`}</span>

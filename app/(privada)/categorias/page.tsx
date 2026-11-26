@@ -8,7 +8,7 @@ import Icon from "../../components/Icon";
 import Modal from "../../components/Modal";
 import SectionHeader from "../../components/SectionHeader";
 import TextField from "../../components/TextField";
-import Toast from "../../components/Toast"; // NOVO
+import Toast from "../../components/Toast";
 import { apiFetch } from "@/lib/api";
 
 // Formato de uma categoria, igual ao que a API devolve
@@ -30,7 +30,7 @@ export default function CategoriasPage() {
   const [apagando, setApagando] = useState<Categoria | null>(null); // null = fechada
   const [excluindo, setExcluindo] = useState(false);
 
-  // NOVO: aviso de sucesso (null = nenhum aviso na tela)
+  // Aviso de sucesso (null = nenhum aviso na tela)
   const [aviso, setAviso] = useState<{ texto: string; tom: "success" | "danger" } | null>(null);
 
   // Busca as categorias na API
@@ -87,7 +87,7 @@ export default function CategoriasPage() {
         });
       }
       setModalAberto(false);
-      setAviso({ texto: editando ? "Categoria renomeada" : "Categoria criada", tom: "success" }); // NOVO
+      setAviso({ texto: editando ? "Categoria renomeada" : "Categoria criada", tom: "success" });
       await carregar(); // atualiza a lista
     } catch (e) {
       // Ex.: 409 "Já existe uma categoria com esse nome"
@@ -104,7 +104,7 @@ export default function CategoriasPage() {
     try {
       await apiFetch(`/categories/${apagando.id}`, { method: "DELETE" });
       setApagando(null);
-      setAviso({ texto: "Categoria apagada", tom: "danger" }); // NOVO
+      setAviso({ texto: "Categoria apagada", tom: "danger" });
       await carregar();
     } catch (e) {
       setErro((e as Error).message);
@@ -237,7 +237,7 @@ export default function CategoriasPage() {
         </p>
       </ConfirmDialog>
 
-      {/* NOVO: aviso de sucesso, só aparece quando existe um aviso */}
+      {/* Aviso de sucesso, só aparece quando existe um aviso */}
       {aviso && <Toast message={aviso.texto} tone={aviso.tom} onClose={() => setAviso(null)} />}
     </div>
   );

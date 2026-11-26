@@ -10,7 +10,7 @@ import SectionHeader from "../../components/SectionHeader";
 import TextField from "../../components/TextField";
 import Toast from "../../components/Toast";
 import { apiFetch } from "@/lib/api";
-import { formatBRL } from "@/lib/format"; // NOVO
+import { formatBRL } from "@/lib/format";
 
 // Valores do formulário (tudo texto, porque vem dos campos)
 const formularioVazio = { description: "", targetAmount: "", deadline: "", currentAmount: "" };
@@ -183,7 +183,7 @@ export default function MetasPage() {
     }
   }
 
-  // NOVO: números do resumo, calculados a partir da lista de metas
+  // Números do resumo, calculados a partir da lista de metas
   const totalGuardado = metas.reduce((soma, m) => soma + Number(m.currentAmount), 0);
   const totalObjetivo = metas.reduce((soma, m) => soma + Number(m.targetAmount), 0);
   const concluidas = metas.filter((m) => m.achieved).length;
@@ -203,7 +203,7 @@ export default function MetasPage() {
 
       {erro && <p className="fc-field-msg fc-field-msg-error">{erro}</p>}
 
-      {/* NOVO: faixa de resumo, só quando existe alguma meta */}
+      {/* Faixa de resumo, só quando existe alguma meta */}
       {metas.length > 0 && (
         <div className="fc-strip">
           <div>

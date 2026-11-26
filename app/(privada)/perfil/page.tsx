@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // NOVO
+import { useRouter } from "next/navigation";
 import Button from "../../components/Button";
-import Modal from "../../components/Modal"; // NOVO
+import Modal from "../../components/Modal";
 import SectionHeader from "../../components/SectionHeader";
 import TextField from "../../components/TextField";
 import Toast from "../../components/Toast";
 import { apiFetch } from "@/lib/api";
-import { clearToken } from "@/lib/auth"; // NOVO
+import { clearToken } from "@/lib/auth";
 
 // Formato do usuário, igual ao que o GET /users/me devolve
 type Usuario = {
@@ -29,7 +29,7 @@ type ErrosSenha = Partial<Record<keyof typeof senhaVazia, string>>;
 
 // Tela de perfil
 export default function PerfilPage() {
-  const router = useRouter(); // NOVO
+  const router = useRouter();
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [erro, setErro] = useState("");
 
@@ -43,7 +43,7 @@ export default function PerfilPage() {
   const [errosSenha, setErrosSenha] = useState<ErrosSenha>({});
   const [salvandoSenha, setSalvandoSenha] = useState(false);
 
-  // NOVO: exclusão da conta
+  // Exclusão da conta
   const [confirmandoExclusao, setConfirmandoExclusao] = useState(false);
   const [palavra, setPalavra] = useState(""); // o que a pessoa digitou
   const [excluindo, setExcluindo] = useState(false);
@@ -138,14 +138,14 @@ export default function PerfilPage() {
     }
   }
 
-  // NOVO: abre a confirmação sempre com o campo vazio
+  // Abre a confirmação sempre com o campo vazio
   function abrirExclusao() {
     setPalavra("");
     setErroExclusao("");
     setConfirmandoExclusao(true);
   }
 
-  // NOVO: apaga a conta na API, apaga o token e volta para o login
+  // Apaga a conta na API, apaga o token e volta para o login
   async function apagarConta() {
     setExcluindo(true);
     try {
@@ -250,7 +250,7 @@ export default function PerfilPage() {
             </form>
           </section>
 
-          {/* NOVO: apagar a conta */}
+          {/* Apagar a conta */}
           <section className="fc-panel fc-panel-danger">
             <SectionHeader
               icon="alert"
@@ -266,7 +266,7 @@ export default function PerfilPage() {
         </div>
       </div>
 
-      {/* NOVO: confirmação de exclusão, com a palavra APAGAR */}
+      {/* Confirmação de exclusão, com a palavra APAGAR */}
       <Modal
         open={confirmandoExclusao}
         title="Apagar sua conta?"
