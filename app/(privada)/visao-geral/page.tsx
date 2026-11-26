@@ -21,7 +21,6 @@ function mesAtual() {
   return `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, "0")}`;
 }
 
-// 1 -> "1 lançamento", 3 -> "3 lançamentos"
 function lancamentos(n: number) {
   return n === 1 ? "1 lançamento" : `${n} lançamentos`;
 }

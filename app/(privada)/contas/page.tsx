@@ -14,7 +14,7 @@ import { apiFetch } from "@/lib/api";
 // Tela de contas bancárias
 export default function ContasPage() {
   const [contas, setContas] = useState<Conta[]>([]);
-  const [movPorConta, setMovPorConta] = useState<Record<number, number>>({}); // id da conta -> quantidade
+  const [movPorConta, setMovPorConta] = useState<Record<number, number>>({});
   const [erro, setErro] = useState("");
 
   // Modal de criar/editar: undefined = fechado, null = criando, Conta = editando
@@ -31,7 +31,6 @@ export default function ContasPage() {
         apiFetch("/accounts"),
         apiFetch("/transactions"),
       ]);
-      //um objeto que funciona como dicionário: chave número (o id da conta) → valor número (a quantidade). 
       // No fim, fica algo como { 1: 3, 2: 0, 5: 1 }.
       const contagem: Record<number, number> = {};
       for (const mov of listaMov as { accountId: number }[]) {

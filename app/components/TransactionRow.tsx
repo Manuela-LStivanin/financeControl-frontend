@@ -13,7 +13,6 @@ type TransactionRowProps = {
 export default function TransactionRow({ movimentacao: m, categoria, conta }: TransactionRowProps) {
   const saida = m.transactionType === "SAIDA";
 
-  // "31/10/2026 · Alimentação · Nubank · Fixa" (o que for null fica de fora)
   const detalhes = [formatDate(m.date), categoria ?? "Sem categoria", conta, m.fixed ? "Fixa" : null]
     .filter(Boolean)
     .join(" · ");
